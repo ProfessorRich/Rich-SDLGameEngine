@@ -17,7 +17,7 @@ public:
 	virtual void Initialise() {}
 	virtual void Update(float deltaTime) {}
 	virtual void Render() {}
-	virtual std::string GetType() {
+	virtual std::string StringOutputType() {
 		return "Component<UNKNOWN>";
 	}
 };

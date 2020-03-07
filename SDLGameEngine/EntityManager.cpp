@@ -23,6 +23,9 @@ void EntityManager::Render() {
 }
 
 void EntityManager::Destroy() {
+	for (auto& entity : m_entities) {
+		entity->Destroy();
+	}
 }
 
 bool EntityManager::HasNoEntities()

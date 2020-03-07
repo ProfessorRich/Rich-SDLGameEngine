@@ -36,7 +36,7 @@ std::string Entity::ListAllComponents() {
 	std::string componentList;
 
 	for (auto& component : m_components) {
-		componentList += "	" + component->GetType() + "\n";
+		componentList += "	" + component->StringOutputType() + "\n";
 	}
 
 	return componentList;

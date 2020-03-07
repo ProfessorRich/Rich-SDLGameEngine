@@ -3,8 +3,11 @@
 #include "./Game.h"
 #include "glm.hpp"
 #include "TransformComponent.h"
+#include "AssetManager.h"
+#include "SpriteComponent.h"
 
 EntityManager Game::g_entityManager;
+AssetManager* Game::g_assetManager = new AssetManager(&g_entityManager);
 SDL_Renderer* Game::g_renderer;         //Initialise static pointer an SDL_Renderer called m_renderer
 
 Game::Game() {
@@ -56,18 +59,34 @@ void Game::Initialise(int width, int height) {
 void Game::LoadLevel(int levelNumber) {
     // TODO: add entities and components to the entities from set levels.
 
-    //Fake level
+    
+
+    // // // Fake level
+    //Assets to Load
+    std::string textureFilePath = "C:\\Users\\Awareness\\Desktop\\Games Development\\SDLGameEngine\\SDLGameEngine\\assets\\images\\tank-big-right.png";  //example
+    g_assetManager->AddTexture("tank-image-right", textureFilePath.c_str());
+    g_assetManager->AddTexture("tank-image-left", textureFilePath.c_str());
+
+    //Entities and Components
+    Entity& newEntity5(g_entityManager.AddEntity("TankTest"));
+    newEntity5.AddComponent<TransformComponent>(300, 50, 10, 10, 32, 32, 2);
+    newEntity5.AddComponent<SpriteComponent>("tank-image-right");
+
     Entity& newEntity(g_entityManager.AddEntity("Blob"));
-    newEntity.AddComponent<TransformComponent>(0, 0, 20, 20, 16, 16, 2);
+    newEntity.AddComponent<TransformComponent>(0, 0, 20, 20, 32, 32, 2);
+    newEntity.AddComponent<SpriteComponent>("tank-image-right");
 
     Entity& newEntity4(g_entityManager.AddEntity("Blob"));
-    newEntity4.AddComponent<TransformComponent>(50, 50, 15, 10, 16, 16, 3);
+    newEntity4.AddComponent<TransformComponent>(50, 50, 15, 10, 32, 32, 3);
+    newEntity4.AddComponent<SpriteComponent>("tank-image-left");
 
     Entity& newEntity2(g_entityManager.AddEntity("Blob"));
-    newEntity2.AddComponent<TransformComponent>(500, 500, -40, 40, 16, 16, 1);
+    newEntity2.AddComponent<TransformComponent>(500, 500, -40, 40, 32, 32, 1);
+    newEntity2.AddComponent<SpriteComponent>("tank-image-left");
 
     Entity& newEntity3(g_entityManager.AddEntity("Blob"));
-    newEntity3.AddComponent<TransformComponent>(1000, 900, -35, -45, 16, 16, 1);
+    newEntity3.AddComponent<TransformComponent>(1000, 900, -35, -45, 32, 32, 1);
+    newEntity3.AddComponent<SpriteComponent>("tank-image-left");
 
     g_entityManager.ListAllEntities();
 }

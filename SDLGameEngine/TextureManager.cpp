@@ -1,7 +1,10 @@
 #include "TextureManager.h"
+#include <iostream>
 
 SDL_Texture* TextureManager::LoadTexture(const char* fileName) {
 	SDL_Surface* surface = IMG_Load(fileName);
+	if (surface == NULL) std::cerr << IMG_GetError() << std::endl;
+	
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(Game::g_renderer, surface);
 	SDL_FreeSurface(surface);
 	return texture;

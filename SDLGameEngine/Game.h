@@ -6,6 +6,8 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
+class AssetManager;
+
 class Game {
 private:
     bool m_isRunning;
@@ -16,6 +18,7 @@ private:
 public:
     static EntityManager g_entityManager;
     static SDL_Renderer* g_renderer;
+    static AssetManager* g_assetManager;
 
     Game();
     ~Game();        
