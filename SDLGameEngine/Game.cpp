@@ -63,12 +63,18 @@ void Game::LoadLevel(int levelNumber) {
 
     // // // Fake level
     //Assets to Load
-    std::string textureFilePath = "C:\\Users\\Awareness\\Desktop\\Games Development\\SDLGameEngine\\SDLGameEngine\\assets\\images\\tank-big-right.png";  //example
-    g_assetManager->AddTexture("tank-image-right", textureFilePath.c_str());
-    g_assetManager->AddTexture("tank-image-left", textureFilePath.c_str());
+    std::string textureFilePath = "C:\\Users\\Awareness\\Desktop\\Games Development\\SDLGameEngine\\SDLGameEngine\\assets\\images\\";  //example
+    g_assetManager->AddTexture("tank-image-right", (textureFilePath + "tank-big-right.png").c_str());
+    g_assetManager->AddTexture("tank-image-left", (textureFilePath + "tank-big-left.png").c_str());
+
+    g_assetManager->AddTexture("heart", (textureFilePath + "heart.png").c_str());
+    g_assetManager->AddTexture("man", (textureFilePath + "man.png").c_str());
+    g_assetManager->AddTexture("bowling", (textureFilePath + "bowling.png").c_str());
+    g_assetManager->AddTexture("dog", (textureFilePath + "dog.png").c_str());
+    g_assetManager->AddTexture("park", (textureFilePath + "park.png").c_str());
 
     //Entities and Components
-    Entity& newEntity5(g_entityManager.AddEntity("TankTest"));
+    /*Entity& newEntity5(g_entityManager.AddEntity("TankTest"));
     newEntity5.AddComponent<TransformComponent>(300, 50, 10, 10, 32, 32, 2);
     newEntity5.AddComponent<SpriteComponent>("tank-image-right");
 
@@ -86,7 +92,29 @@ void Game::LoadLevel(int levelNumber) {
 
     Entity& newEntity3(g_entityManager.AddEntity("Blob"));
     newEntity3.AddComponent<TransformComponent>(1000, 900, -35, -45, 32, 32, 1);
-    newEntity3.AddComponent<SpriteComponent>("tank-image-left");
+    newEntity3.AddComponent<SpriteComponent>("tank-image-left");*/
+
+    Entity& manEntity(g_entityManager.AddEntity("Man"));
+    manEntity.AddComponent<TransformComponent>(1600, 0, -35, 10, 32, 32, 3);
+    manEntity.AddComponent<SpriteComponent>("man");
+
+    Entity& heartEntity(g_entityManager.AddEntity("Heart"));
+    heartEntity.AddComponent<TransformComponent>(800, 450, 1, -10, 32, 32, 1);
+    heartEntity.AddComponent<SpriteComponent>("heart");
+
+    Entity& bowlingEntity(g_entityManager.AddEntity("Bowling"));
+    bowlingEntity.AddComponent<TransformComponent>(1600, 30, -119, 13, 32, 32, 1);
+    bowlingEntity.AddComponent<SpriteComponent>("bowling");
+
+    Entity& dogEntity(g_entityManager.AddEntity("Dog"));
+    bowlingEntity.AddComponent<TransformComponent>(1700, 30, -120, 11, 32, 32, 1);
+    bowlingEntity.AddComponent<SpriteComponent>("dog");
+
+    Entity& parkEntity(g_entityManager.AddEntity("Park"));
+    bowlingEntity.AddComponent<TransformComponent>(50, 700, 0, 0, 32, 32, 8);
+    bowlingEntity.AddComponent<SpriteComponent>("park");
+
+
 
     g_entityManager.ListAllEntities();
 }
@@ -137,7 +165,8 @@ void Game::Update() {
 void Game::Render() {
 
     // Clear the buffer
-    SetDrawColour(21, 21, 21, 255);
+    SetDrawColour(21, 21, 21, 255); //the grey background
+    // SetDrawColour(255, 255, 255, 255);  //white
     SDL_RenderClear(g_renderer);
 
     // Render some game stuff in the buffer
