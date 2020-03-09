@@ -8,8 +8,6 @@
 class Entity;	
 
 class Component {
-private:
-
 public:
 	Entity* g_owner;
 

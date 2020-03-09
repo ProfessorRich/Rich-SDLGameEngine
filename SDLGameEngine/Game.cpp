@@ -6,11 +6,14 @@
 #include "AssetManager.h"
 #include "SpriteComponent.h"
 #include "KeyboardInputComponent.h"
+#include "Map.h"
+#include "TileComponent.h"
 
-EntityManager Game::g_entityManager;
+EntityManager g_entityManager;
 AssetManager* Game::g_assetManager = new AssetManager(&g_entityManager);
 SDL_Renderer* Game::g_renderer;         //Initialise static pointer an SDL_Renderer called m_renderer
 SDL_Event Game::g_event;
+Map* g_map;
 
 Game::Game() {
     m_isRunning = false;
@@ -59,8 +62,10 @@ void Game::Initialise(int width, int height) {
 }
 
 void Game::LoadLevel(int levelNumber) {
-    // TODO: add entities and components to the entities from set levels.
+    g_assetManager->AddTexture("jungle-tiletexture", std::string(".\\assets\\tilemaps\\jungle.png").c_str());
 
+    g_map = new Map("jungle-tiletexture", 2, 32);
+    g_map->LoadMap(".\\assets\\tilemaps\\jungle.map", 25, 20);
     
 
     // // // Fake level

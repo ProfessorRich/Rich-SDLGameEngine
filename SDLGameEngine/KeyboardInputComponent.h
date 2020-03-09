@@ -23,6 +23,7 @@ public:
 		g_moveLeftKey = GetSDLKeyStringCode(left);
 		g_moveRightKey = GetSDLKeyStringCode(right);
 		g_shootKey = GetSDLKeyStringCode(shoot);
+
 	}
 
 	// Converts string description of key to SDL key codes

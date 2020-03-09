@@ -16,7 +16,7 @@ private:
     // int m_colourCycle = 0;
 
 public:
-    static EntityManager g_entityManager;
+    // static EntityManager g_entityManager; // I guess it's going TRULY global...
     static SDL_Renderer* g_renderer;
     static AssetManager* g_assetManager;
     static SDL_Event g_event;
