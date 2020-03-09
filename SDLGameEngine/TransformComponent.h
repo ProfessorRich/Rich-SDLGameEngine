@@ -35,9 +35,9 @@ public:
 
 	}
 
-	std::string StringOutputType() {
+	/*std::string StringOutputType() {
 		return "Component<TransformComponent>";
-	}
+	}*/
 };
 
 #endif

@@ -5,10 +5,12 @@
 #include "TransformComponent.h"
 #include "AssetManager.h"
 #include "SpriteComponent.h"
+#include "KeyboardInputComponent.h"
 
 EntityManager Game::g_entityManager;
 AssetManager* Game::g_assetManager = new AssetManager(&g_entityManager);
 SDL_Renderer* Game::g_renderer;         //Initialise static pointer an SDL_Renderer called m_renderer
+SDL_Event Game::g_event;
 
 Game::Game() {
     m_isRunning = false;
@@ -63,9 +65,10 @@ void Game::LoadLevel(int levelNumber) {
 
     // // // Fake level
     //Assets to Load
-    std::string textureFilePath = "C:\\Users\\Awareness\\Desktop\\Games Development\\SDLGameEngine\\SDLGameEngine\\assets\\images\\";  //example
-    g_assetManager->AddTexture("tank-image-right", (textureFilePath + "tank-big-right.png").c_str());
-    g_assetManager->AddTexture("tank-image-left", (textureFilePath + "tank-big-left.png").c_str());
+    std::string textureFilePath = ".\\assets\\images\\";  //Sets the images file path
+    g_assetManager->AddTexture("tank-right", (textureFilePath + "tank-big-right.png").c_str());
+    g_assetManager->AddTexture("tank-left", (textureFilePath + "tank-big-left.png").c_str());
+    g_assetManager->AddTexture("chopper", (textureFilePath + "chopper-spritesheet.png").c_str());
 
     g_assetManager->AddTexture("heart", (textureFilePath + "heart.png").c_str());
     g_assetManager->AddTexture("man", (textureFilePath + "man.png").c_str());
@@ -74,28 +77,13 @@ void Game::LoadLevel(int levelNumber) {
     g_assetManager->AddTexture("park", (textureFilePath + "park.png").c_str());
 
     //Entities and Components
-    /*Entity& newEntity5(g_entityManager.AddEntity("TankTest"));
-    newEntity5.AddComponent<TransformComponent>(300, 50, 10, 10, 32, 32, 2);
-    newEntity5.AddComponent<SpriteComponent>("tank-image-right");
-
-    Entity& newEntity(g_entityManager.AddEntity("Blob"));
-    newEntity.AddComponent<TransformComponent>(0, 0, 20, 20, 32, 32, 2);
-    newEntity.AddComponent<SpriteComponent>("tank-image-right");
-
-    Entity& newEntity4(g_entityManager.AddEntity("Blob"));
-    newEntity4.AddComponent<TransformComponent>(50, 50, 15, 10, 32, 32, 3);
-    newEntity4.AddComponent<SpriteComponent>("tank-image-left");
-
-    Entity& newEntity2(g_entityManager.AddEntity("Blob"));
-    newEntity2.AddComponent<TransformComponent>(500, 500, -40, 40, 32, 32, 1);
-    newEntity2.AddComponent<SpriteComponent>("tank-image-left");
-
-    Entity& newEntity3(g_entityManager.AddEntity("Blob"));
-    newEntity3.AddComponent<TransformComponent>(1000, 900, -35, -45, 32, 32, 1);
-    newEntity3.AddComponent<SpriteComponent>("tank-image-left");*/
+    Entity& chopperEntity(g_entityManager.AddEntity("Chopper"));
+    chopperEntity.AddComponent<TransformComponent>(800, 700, 0, 0, 32, 32, 3);
+    chopperEntity.AddComponent<SpriteComponent>("chopper", 2, 6, true, false);
+    chopperEntity.AddComponent<KeyboardInputComponent>("up", "down", "left", "right", "space");
 
     Entity& manEntity(g_entityManager.AddEntity("Man"));
-    manEntity.AddComponent<TransformComponent>(1600, 0, -35, 10, 32, 32, 3);
+    manEntity.AddComponent<TransformComponent>(1600, 0, -35, 10, 32, 32, 1);
     manEntity.AddComponent<SpriteComponent>("man");
 
     Entity& heartEntity(g_entityManager.AddEntity("Heart"));
@@ -107,12 +95,12 @@ void Game::LoadLevel(int levelNumber) {
     bowlingEntity.AddComponent<SpriteComponent>("bowling");
 
     Entity& dogEntity(g_entityManager.AddEntity("Dog"));
-    bowlingEntity.AddComponent<TransformComponent>(1700, 30, -120, 11, 32, 32, 1);
-    bowlingEntity.AddComponent<SpriteComponent>("dog");
+    dogEntity.AddComponent<TransformComponent>(1700, 30, -120, 11, 32, 32, 1);
+    dogEntity.AddComponent<SpriteComponent>("dog");
 
     Entity& parkEntity(g_entityManager.AddEntity("Park"));
-    bowlingEntity.AddComponent<TransformComponent>(50, 700, 0, 0, 32, 32, 8);
-    bowlingEntity.AddComponent<SpriteComponent>("park");
+    parkEntity.AddComponent<TransformComponent>(50, 700, 0, 0, 32, 32, 8);
+    parkEntity.AddComponent<SpriteComponent>("park");
 
 
 
@@ -120,16 +108,15 @@ void Game::LoadLevel(int levelNumber) {
 }
 
 void Game::ProcessInput() {
-    SDL_Event event;
-    SDL_PollEvent(&event);
+    SDL_PollEvent(&g_event);
 
-    switch (event.type) {
+    switch (g_event.type) {
         case SDL_QUIT: {
             m_isRunning = false;
             break;
         }
         case SDL_KEYDOWN: {
-            if (event.key.keysym.sym == SDLK_ESCAPE) {
+            if (g_event.key.keysym.sym == SDLK_ESCAPE) {
                 m_isRunning = false;
             }
         }

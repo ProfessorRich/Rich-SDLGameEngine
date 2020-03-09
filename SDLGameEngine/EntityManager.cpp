@@ -50,9 +50,10 @@ unsigned int EntityManager::GetEntityCount()
 	return m_entities.size();
 }
 
-void EntityManager::ListAllEntities() {
+void EntityManager::ListAllEntities() const {
 	for (auto& entity : m_entities) {
 		std::cout << "Entity Name: " << entity->GetName() << std::endl;
-		std::cout << entity->ListAllComponents() << std::endl;
+		entity->ListAllComponents();
+		std::cout << std::endl;
 	}
 }

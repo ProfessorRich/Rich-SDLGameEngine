@@ -19,6 +19,7 @@ public:
     static EntityManager g_entityManager;
     static SDL_Renderer* g_renderer;
     static AssetManager* g_assetManager;
+    static SDL_Event g_event;
 
     Game();
     ~Game();        

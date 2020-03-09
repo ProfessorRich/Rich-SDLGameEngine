@@ -27,7 +27,7 @@ public:
 	void Render();
 	void Destroy();
 	bool IsActive() const;
-	std::string ListAllComponents();
+	void ListAllComponents() const;
 
 	// I don't really understand template syntax... but the idea here is that whatever type of component is 'added' by AddComponent, this will deal with it.
 	template <typename T, typename... TArgs>
@@ -44,6 +44,16 @@ public:
 	T* GetComponent() {
 		return static_cast<T*>(m_componentTypeMap[&typeid(T)]);					// so ugly and very hard to understand. It gets the component typeid from the map.
 	}
+
+	template <typename T>
+	bool HasComponent() const {
+		bool found = false;
+		for (auto& component : m_componentTypeMap) {
+			if (&typeid(T) == component.first) found = true;
+		}
+		return found;
+	}
+
 };
 
 #endif
