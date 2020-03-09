@@ -7,6 +7,8 @@
 #include <SDL.h>
 #include <iostream>
 
+class KeyboardInputComponent; 
+
 class TransformComponent : public Component {
 public:
 	glm::vec2 g_position;
@@ -27,8 +29,40 @@ public:
 	}
 
 	void Update(float deltaTime) {
-		g_position.x += g_velocity.x*deltaTime;
-		g_position.y += g_velocity.y*deltaTime;
+		Move(deltaTime);
+		if (g_owner->HasComponent<KeyboardInputComponent>()) {		// if it's a controllable entity, keep it in the window
+			FixBounds();
+		}
+	}
+
+	void Move(float deltaTime) {
+		g_position.x += g_velocity.x * deltaTime;
+		g_position.y += g_velocity.y * deltaTime;
+	}
+
+	void FixBounds() {
+		float xLimit = static_cast<float>(G_WINDOW_WIDTH - (g_width * g_scale));
+		float yLimit = static_cast<float>(G_WINDOW_HEIGHT - (g_height * g_scale));
+
+		
+		if (g_position.x < 0) {
+			g_position.x = 0;
+			g_velocity.x = 0;
+		}
+		if (g_position.x > xLimit) {
+			g_position.x = xLimit;
+			g_velocity.x = 0;
+		}
+
+		if (g_position.y < 0) {
+			g_position.y = 0;
+			g_velocity.y = 0;
+		}
+
+		if (g_position.y > yLimit) {
+			g_position.y = yLimit;
+			g_velocity.y = 0;
+		}
 	}
 
 	void Render() {

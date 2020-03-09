@@ -74,32 +74,41 @@ public:
 		}
 
 		if (Game::g_event.type == SDL_KEYUP){
+			BringToAStop();
+			
 			std::string keyCode = std::to_string(Game::g_event.key.keysym.sym);
 
 			if (keyCode.compare(g_moveUpKey) == 0) {
-
+				
 			}
 
 
 			if (keyCode.compare(g_moveDownKey) == 0) {
-
+			;
 			}
 
 
 			if (keyCode.compare(g_moveLeftKey) == 0) {
-
+				
 			}
 
 
 			if (keyCode.compare(g_moveRightKey) == 0) {
-
+				
 			}
 
 
 			if (keyCode.compare(g_shootKey) == 0) {
-
+				
 			}
 		}
+	}
+
+	void BringToAStop() {
+		if (g_owner->GetComponent<TransformComponent>()->g_velocity.y > 0) g_owner->GetComponent<TransformComponent>()->g_velocity.y--;
+		if (g_owner->GetComponent<TransformComponent>()->g_velocity.y < 0) g_owner->GetComponent<TransformComponent>()->g_velocity.y++;
+		if (g_owner->GetComponent<TransformComponent>()->g_velocity.x > 0) g_owner->GetComponent<TransformComponent>()->g_velocity.x--;
+		if (g_owner->GetComponent<TransformComponent>()->g_velocity.x < 0) g_owner->GetComponent<TransformComponent>()->g_velocity.x++;
 	}
 
 };

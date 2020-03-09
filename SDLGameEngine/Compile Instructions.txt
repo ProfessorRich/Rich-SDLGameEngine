@@ -1,0 +1,17 @@
+Needs the following libraries to compile:
+
+SDL
+https://www.libsdl.org/download-2.0.php
+
+SDL_image
+https://www.libsdl.org/projects/SDL_image/
+
+SDL_tff
+https://www.libsdl.org/projects/SDL_ttf/
+
+glm
+https://glm.g-truc.net/0.9.9/index.html
+
+lua
+https://www.lua.org/download.html
+
