@@ -13,8 +13,13 @@ EntityManager::EntityManager() {
 }
 
 void EntityManager::Update(float deltaTime) {
-	for (auto& entity : m_entities) {
-		entity->Update(deltaTime);
+	for (unsigned int i = 0; i < m_entities.size(); i++) {
+		if (!m_entities[i]->IsActive()) {
+			m_entities.erase(m_entities.begin() + i);
+		}
+		else {
+			m_entities[i]->Update(deltaTime);
+		}
 	}
 }
 
