@@ -75,10 +75,12 @@ public:
 		}
 
 		if (Game::g_event.type == SDL_KEYUP){
+
 			BringToAStop();
 			
 			std::string keyCode = std::to_string(Game::g_event.key.keysym.sym);
 
+			/*    Do I need any of this bs? Dunno. Maybe later for ADVANCED PHYSIOKZ
 			if (keyCode.compare(g_moveUpKey) == 0) {
 				
 			}
@@ -101,7 +103,7 @@ public:
 
 			if (keyCode.compare(g_shootKey) == 0) {
 				
-			}
+			}*/
 		}
 	}
 

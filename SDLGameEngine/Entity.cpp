@@ -4,7 +4,7 @@ Entity::Entity(EntityManager& manager) : g_entityManager(manager) {
 	m_isActive = true;
 }
 
-Entity::Entity(EntityManager& manager, std::string name) : g_entityManager(manager), m_name(name) {
+Entity::Entity(EntityManager& manager, std::string name, RenderLayer layer) : g_entityManager(manager), m_name(name), g_layer(layer) {
 	m_isActive = true;
 }
 

@@ -13,12 +13,14 @@ EntityManager g_entityManager;
 AssetManager* Game::g_assetManager = new AssetManager(&g_entityManager);
 SDL_Renderer* Game::g_renderer;         //Initialise static pointer an SDL_Renderer called m_renderer
 SDL_Event Game::g_event;
+SDL_Rect Game::g_camera = { 0,0,G_WINDOW_WIDTH, G_WINDOW_HEIGHT };
 Map* g_map;
 
 Game::Game() {
     m_isRunning = false;
     g_renderer = NULL;
     m_window = nullptr;
+    // g_mapHeight = g_mapWidth = 0; GIMPED
 }
 
 Game::~Game() {
@@ -61,55 +63,66 @@ void Game::Initialise(int width, int height) {
     return;
 }
 
+// Add the player and make global! (l33t progr@ming skillz)
+Entity& g_playerEntity(g_entityManager.AddEntity("Chopper", G_PLAYER_LAYER));
+
 void Game::LoadLevel(int levelNumber) {
-    g_assetManager->AddTexture("jungle-tiletexture", std::string(".\\assets\\tilemaps\\jungle.png").c_str());
+    //Load tilemap
 
-    g_map = new Map("jungle-tiletexture", 2, 32);
-    g_map->LoadMap(".\\assets\\tilemaps\\jungle.map", 25, 20);
-    
+    int mapScale, mapTileSize, mapWidth, mapHeight; //temperary for debugging
+    mapScale = 3;
+    mapTileSize = 32; // probably will never change
+    mapWidth = 25;
+    mapHeight = 20;
 
-    // // // Fake level
-    //Assets to Load
-    std::string textureFilePath = ".\\assets\\images\\";  //Sets the images file path
-    g_assetManager->AddTexture("tank-right", (textureFilePath + "tank-big-right.png").c_str());
-    g_assetManager->AddTexture("tank-left", (textureFilePath + "tank-big-left.png").c_str());
-    g_assetManager->AddTexture("chopper", (textureFilePath + "chopper-spritesheet.png").c_str());
+    std::string mapFilePath = ".\\assets\\tilemaps\\";                        //Sets the tilemaps file path
+
+    g_assetManager->AddTexture("jungle-tiletexture", std::string(mapFilePath + "jungle.png").c_str());
+    g_map = new Map("jungle-tiletexture", mapScale, mapTileSize);
+    g_map->LoadMap(".\\assets\\tilemaps\\jungle.map", mapWidth, mapHeight);
+
+    //Load assets
+    std::string textureFilePath = ".\\assets\\images\\";                        //Sets the images file path
+    Game::g_assetManager->AddTexture("chopper", (textureFilePath + "chopper-spritesheet.png").c_str());
 
     g_assetManager->AddTexture("heart", (textureFilePath + "heart.png").c_str());
     g_assetManager->AddTexture("man", (textureFilePath + "man.png").c_str());
     g_assetManager->AddTexture("bowling", (textureFilePath + "bowling.png").c_str());
     g_assetManager->AddTexture("dog", (textureFilePath + "dog.png").c_str());
-    g_assetManager->AddTexture("park", (textureFilePath + "park.png").c_str());
+    g_assetManager->AddTexture("flame", (textureFilePath + "flame-basic.png").c_str());
 
-    //Entities and Components
-    Entity& chopperEntity(g_entityManager.AddEntity("Chopper"));
-    chopperEntity.AddComponent<TransformComponent>(800, 700, 0, 0, 32, 32, 3);
-    chopperEntity.AddComponent<SpriteComponent>("chopper", 2, 6, true, false);
-    chopperEntity.AddComponent<KeyboardInputComponent>("up", "down", "left", "right", "space");
+    //Load player components
+    g_playerEntity.AddComponent<TransformComponent>(800, 700, 0, 0, 32, 32, 2);
+    g_playerEntity.AddComponent<SpriteComponent>("chopper", 2, 6, true, false);
+    g_playerEntity.AddComponent<KeyboardInputComponent>("up", "down", "left", "right", "space");
 
-    Entity& manEntity(g_entityManager.AddEntity("Man"));
+    //Load entities and related components
+    Entity& flameEntity(g_entityManager.AddEntity("Flame", G_GUI_LAYER));
+    flameEntity.AddComponent<TransformComponent>(0, G_WINDOW_HEIGHT-64, 0, 0, 64, 64, 1);
+    flameEntity.AddComponent<SpriteComponent>("flame", 2, 3, false, true);
+
+    Entity& manEntity(g_entityManager.AddEntity("Man", G_NPC_LAYER));
     manEntity.AddComponent<TransformComponent>(1600, 0, -35, 10, 32, 32, 1);
     manEntity.AddComponent<SpriteComponent>("man");
 
-    Entity& heartEntity(g_entityManager.AddEntity("Heart"));
+    Entity& heartEntity(g_entityManager.AddEntity("Heart", G_COLLECTABLE_LAYER));
     heartEntity.AddComponent<TransformComponent>(800, 450, 1, -10, 32, 32, 1);
     heartEntity.AddComponent<SpriteComponent>("heart");
 
-    Entity& bowlingEntity(g_entityManager.AddEntity("Bowling"));
+    Entity& bowlingEntity(g_entityManager.AddEntity("Bowling", G_PROJECTILE_LAYER));
     bowlingEntity.AddComponent<TransformComponent>(1600, 30, -119, 13, 32, 32, 1);
     bowlingEntity.AddComponent<SpriteComponent>("bowling");
 
-    Entity& dogEntity(g_entityManager.AddEntity("Dog"));
+    Entity& dogEntity(g_entityManager.AddEntity("Dog", G_NPC_LAYER));
     dogEntity.AddComponent<TransformComponent>(1700, 30, -120, 11, 32, 32, 1);
     dogEntity.AddComponent<SpriteComponent>("dog");
 
-    Entity& parkEntity(g_entityManager.AddEntity("Park"));
+    Entity& parkEntity(g_entityManager.AddEntity("Park", G_DECOR_LAYER));
     parkEntity.AddComponent<TransformComponent>(50, 700, 0, 0, 32, 32, 8);
     parkEntity.AddComponent<SpriteComponent>("park");
 
-
-
-    g_entityManager.ListAllEntities();
+    //List entites and componenets (for debugging)
+    g_entityManager.ListAllEntities();                
 }
 
 void Game::ProcessInput() {
@@ -150,8 +163,11 @@ void Game::Update() {
     // FPS Counter
     // std::cout << 1.0/deltaTime << std::endl; 
 
-    // Move the projectile by proportionally how much deltaTime has passed in s since last frame.
+    // Move entities by proportionally how much deltaTime has passed in s since last frame.
     g_entityManager.Update(deltaTime);   
+
+    // Move the g_camera SDL_Rect
+    HandleCameraMovement();
 }
 
 void Game::Render() {
@@ -172,6 +188,23 @@ void Game::Render() {
     // Swap the buffer with what is on screen
     SDL_RenderPresent(g_renderer);
 
+}
+
+void Game::HandleCameraMovement() {
+    TransformComponent* trackingObjectTransform = g_playerEntity.GetComponent<TransformComponent>();
+    
+    g_camera.x = trackingObjectTransform->g_position.x - (G_WINDOW_WIDTH / 2);
+    g_camera.y = trackingObjectTransform->g_position.y - (G_WINDOW_HEIGHT / 2);
+
+    // CLAMP the camera to the play area
+    if (g_camera.x < 0) g_camera.x = 0;
+    if (g_camera.y < 0) g_camera.y = 0;
+
+    int cameraXLimit = (g_map->GetMapWidth() * g_map->GetTileSize() * g_map->GetScale()) - (G_WINDOW_WIDTH);             // Centre of camera max X is Map width * tile pixels * scale - full window width (as camera point is the top-left corner of the bloody thing
+    int cameraYLimit = (g_map->GetMapHeight() * g_map->GetTileSize() * g_map->GetScale()) - (G_WINDOW_HEIGHT);
+
+    if (g_camera.x > cameraXLimit) g_camera.x = cameraXLimit;
+    if (g_camera.y > cameraYLimit) g_camera.y = cameraYLimit;
 }
 
 void Game::Destroy() {

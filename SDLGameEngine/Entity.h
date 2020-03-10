@@ -1,11 +1,13 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "EntityManager.h"
-#include "Component.h"
+
 #include <vector>
 #include <string>
 #include <map>
+#include "EntityManager.h"
+#include "Component.h"
+#include "Constants.h"
 
 // So this compiles...
 class EntityManager;
@@ -21,8 +23,9 @@ private:
 
 public:
 	std::string GetName();
+	RenderLayer g_layer;
 	Entity(EntityManager& manager);
-	Entity(EntityManager& manager, std::string name);
+	Entity(EntityManager& manager, std::string name, RenderLayer layer);
 	void Update(float deltaTime);
 	void Render();
 	void Destroy();

@@ -89,8 +89,16 @@ public:
 		}
 		m_sourceRectangle.y = m_animationIndex * m_transform->g_height;
 
-		m_destinationRectangle.x = static_cast<int>(m_transform->g_position.x);
-		m_destinationRectangle.y = static_cast<int>(m_transform->g_position.y);
+		// If m_isFixed (GUI elements etc) then don't adjust for camera.
+		if (m_isFixed) {
+			m_destinationRectangle.x = static_cast<int>(m_transform->g_position.x);
+			m_destinationRectangle.y = static_cast<int>(m_transform->g_position.y);
+		}
+		else {
+			m_destinationRectangle.x = static_cast<int>(m_transform->g_position.x) - Game::g_camera.x;
+			m_destinationRectangle.y = static_cast<int>(m_transform->g_position.y) - Game::g_camera.y;
+		}
+
 		m_destinationRectangle.w = m_transform->g_width * m_transform->g_scale;
 		m_destinationRectangle.h = m_transform->g_height * m_transform->g_scale;
 	}

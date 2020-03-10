@@ -30,7 +30,7 @@ public:
 
 	void Update(float deltaTime) {
 		Move(deltaTime);
-		if (g_owner->HasComponent<KeyboardInputComponent>()) {		// if it's a controllable entity, keep it in the window
+		if (g_owner->HasComponent<KeyboardInputComponent>()) {		// if it's a controllable entity, keep it in certain boundaries
 			FixBounds();
 		}
 	}
@@ -40,9 +40,12 @@ public:
 		g_position.y += g_velocity.y * deltaTime;
 	}
 
+	// Clamps entity to boundaries (such as the map...)
 	void FixBounds() {
-		float xLimit = static_cast<float>(G_WINDOW_WIDTH - (g_width * g_scale));
-		float yLimit = static_cast<float>(G_WINDOW_HEIGHT - (g_height * g_scale));
+
+		/*
+		float xLimit = static_cast<float>((G_WINDOW_WIDTH) - (g_width * g_scale));			// TODO: Fix this bs
+		float yLimit = static_cast<float>((G_WINDOW_HEIGHT) - (g_height * g_scale));
 
 		
 		if (g_position.x < 0) {
@@ -62,7 +65,7 @@ public:
 		if (g_position.y > yLimit) {
 			g_position.y = yLimit;
 			g_velocity.y = 0;
-		}
+		}*/
 	}
 
 	void Render() {

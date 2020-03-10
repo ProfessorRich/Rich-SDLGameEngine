@@ -12,7 +12,7 @@ public:
 	SDL_Texture* m_texture;
 	SDL_Rect m_sourceRect;
 	SDL_Rect m_destRect;
-	glm::vec2 m_position;
+	glm::uvec2 m_position;
 
 	TileComponent(int sourceRectX, int sourceRectY, int destX, int destY, int tileSize, int tileScale, std::string assetTextureId) {
 		m_texture = Game::g_assetManager->GetTexture(assetTextureId);
@@ -36,7 +36,8 @@ public:
 	}
 
 	void Update(float deltaTime) override {
-		// TODO: Needed when camera controls come up. Tiles need to move as 'camera' moves.
+		m_destRect.x = m_position.x - Game::g_camera.x;
+		m_destRect.y = m_position.y - Game::g_camera.y;
 	}
 
 	void Render() override {
