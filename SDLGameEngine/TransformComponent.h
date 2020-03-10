@@ -2,10 +2,14 @@
 #define TRANSFORMCOMPONENT_H
 
 #include "EntityManager.h"
+#include "Map.h"
 #include "Game.h"
 #include "glm.hpp"
 #include <SDL.h>
 #include <iostream>
+
+// defined in Game.h - LoadLevel function
+extern Map* g_map;												
 
 class TransformComponent : public Component {
 public:
@@ -28,9 +32,7 @@ public:
 
 	void Update(float deltaTime) {
 		Move(deltaTime);
-		/* if (g_owner->HasComponent<KeyboardInputComponent>()) {		// if it's a controllable entity, keep it in certain boundaries
-			FixBounds();
-		}*/
+		CheckAndFixBounds();
 	}
 
 	void Move(float deltaTime) {
@@ -39,19 +41,12 @@ public:
 	}
 
 	// Clamps entity to boundaries (such as the map...)
-	void FixBounds() {
+	void CheckAndFixBounds() {
+		unsigned int xMax = (g_map->GetMapWidth() * g_map->GetTileSize() * g_map->GetScale()) - (g_width * g_scale);
+		unsigned int yMax = (g_map->GetMapHeight() * g_map->GetTileSize() * g_map->GetScale()) - (g_height * g_scale);
 
-		/*
-		float xLimit = static_cast<float>((G_WINDOW_WIDTH) - (g_width * g_scale));			// TODO: Fix this bs
-		float yLimit = static_cast<float>((G_WINDOW_HEIGHT) - (g_height * g_scale));
-
-		
 		if (g_position.x < 0) {
 			g_position.x = 0;
-			g_velocity.x = 0;
-		}
-		if (g_position.x > xLimit) {
-			g_position.x = xLimit;
 			g_velocity.x = 0;
 		}
 
@@ -60,14 +55,19 @@ public:
 			g_velocity.y = 0;
 		}
 
-		if (g_position.y > yLimit) {
-			g_position.y = yLimit;
+		if (g_position.x >= xMax) {
+			g_position.x = xMax;
+			g_velocity.x = 0;
+		}
+
+		if (g_position.y >= yMax) {
+			g_position.y = yMax;
 			g_velocity.y = 0;
-		}*/
+		}
 	}
 
 	void Render() {
-		// overridden by SpriteComponent
+																						// overridden by SpriteComponent
 	}
 
 };

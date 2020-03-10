@@ -12,7 +12,7 @@ public:
 	SDL_Texture* m_texture;
 	SDL_Rect m_sourceRect;
 	SDL_Rect m_destRect;
-	glm::uvec2 m_position;
+	glm::ivec2 m_position;
 
 	TileComponent(int sourceRectX, int sourceRectY, int destX, int destY, int tileSize, int tileScale, std::string assetTextureId) {
 		m_texture = Game::g_assetManager->GetTexture(assetTextureId);

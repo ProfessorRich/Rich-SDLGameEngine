@@ -13,7 +13,7 @@ Map::Map(std::string textureId, int scale, int tileSize) {
 }
 
 void Map::LoadMap(std::string filePath, int mapSizeX, int mapSizeY) {
-	m_mapSizeX = mapSizeX;		// why member variable? Because used in a get function which the camera handling needs.
+	m_mapSizeX = mapSizeX;												// why member variable? Because used in a get function which the camera handling needs.
 	m_mapSizeY = mapSizeY;
 
 	std::fstream mapFile;
@@ -23,15 +23,15 @@ void Map::LoadMap(std::string filePath, int mapSizeX, int mapSizeY) {
 	int sourceRectY, sourceRectX;
 
 	for (unsigned int y = 0; y < m_mapSizeY; y++) {
-		for (unsigned int x = 0; x < m_mapSizeX; x++) {				// get a character from the file, that's the columns accross in the tileset. Get next character, that's the rows down.
+		for (unsigned int x = 0; x < m_mapSizeX; x++) {					// get a character from the file, that's the columns accross in the tileset. Get next character, that's the rows down.
 			mapFile.get(ch);
 			sourceRectY = atoi(&ch) * m_tileSize;
 			
 			mapFile.get(ch);
 			sourceRectX = atoi(&ch) * m_tileSize;
 
-			AddTile(sourceRectX, sourceRectY, x * m_tileSize*m_scale, y * m_tileSize*m_scale);
-			mapFile.ignore();								// skip the ',' characters
+			AddTile(sourceRectX, sourceRectY, x * m_tileSize * m_scale, y * m_tileSize * m_scale);
+			mapFile.ignore();											// skip the ',' characters in the .map file read
 		}
 	}
 

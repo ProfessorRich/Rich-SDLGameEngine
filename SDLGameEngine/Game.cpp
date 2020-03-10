@@ -67,7 +67,7 @@ void Game::Initialise(int width, int height) {
     m_arialFont = TTF_OpenFont(".\\assets\\fonts\\arial.ttf", 24);
 
     // Set location of fps counter
-    m_fpsBox = { 0,0,100,16 };
+    m_fpsBox = { 10, 10, G_FPS_COUNTER_WIDTH, G_FPS_COUNTER_HEIGHT };
 
     LoadLevel(0);
 
@@ -76,7 +76,7 @@ void Game::Initialise(int width, int height) {
 }
 
 // Add the player and make global! (l33t progr@ming skillz)
-Entity& g_playerEntity(g_entityManager.AddEntity("Chopper", G_PLAYER_LAYER));
+Entity& g_playerEntity(g_entityManager.AddEntity("player", G_PLAYER_LAYER));
 
 void Game::LoadLevel(int levelNumber) {
     //Load tilemap
@@ -94,7 +94,7 @@ void Game::LoadLevel(int levelNumber) {
 
     //Load assets
     std::string textureFilePath = ".\\assets\\images\\";                        //Sets the images file path
-    Game::g_assetManager->AddTexture("chopper", (textureFilePath + "chopper-spritesheet.png").c_str());
+    Game::g_assetManager->AddTexture("player", (textureFilePath + "chopper-spritesheet.png").c_str());
 
     g_assetManager->AddTexture("heart", (textureFilePath + "heart.png").c_str());
     g_assetManager->AddTexture("man", (textureFilePath + "man.png").c_str());
@@ -104,32 +104,33 @@ void Game::LoadLevel(int levelNumber) {
 
     //Load player components
     g_playerEntity.AddComponent<TransformComponent>(800, 700, 0, 0, 32, 32, 2);
-    g_playerEntity.AddComponent<SpriteComponent>("chopper", 2, 6, true, false);
+    g_playerEntity.AddComponent<SpriteComponent>("player", 2, 6, true, false);
     g_playerEntity.AddComponent<KeyboardInputComponent>("up", "down", "left", "right", "space");
-    g_playerEntity.AddComponent<ColliderComponent>("Player", 800, 700, 32, 32);
+    g_playerEntity.AddComponent<ColliderComponent>("PLAYER", 800, 700, 32, 32);
 
     //Load entities and related components
     Entity& heartEntity(g_entityManager.AddEntity("Heart", G_COLLECTABLE_LAYER));
     heartEntity.AddComponent<TransformComponent>(800, 450, 1, -10, 32, 32, 1);
     heartEntity.AddComponent<SpriteComponent>("heart");
-    heartEntity.AddComponent<ColliderComponent>("Heart", 800, 450, 32, 32);
+    heartEntity.AddComponent<ColliderComponent>("HEART", 800, 450, 32, 32);
+
+    Entity& manEntity(g_entityManager.AddEntity("Man", G_NPC_LAYER));
+    manEntity.AddComponent<TransformComponent>(1600, 0, -35, 10, 32, 32, 1);
+    manEntity.AddComponent<SpriteComponent>("man");
+    manEntity.AddComponent<ColliderComponent>("MAN", 1600, 0, 32, 32);
+
+    Entity& dogEntity(g_entityManager.AddEntity("Dog", G_NPC_LAYER));
+    dogEntity.AddComponent<TransformComponent>(1700, 30, -120, 11, 32, 32, 1);
+    dogEntity.AddComponent<SpriteComponent>("dog");
+    dogEntity.AddComponent<ColliderComponent>("DOG", 1700, 30, 32, 32);
 
     Entity& flameEntity(g_entityManager.AddEntity("Flame", G_GUI_LAYER));
     flameEntity.AddComponent<TransformComponent>(0, G_WINDOW_HEIGHT-64, 0, 0, 64, 64, 1);
     flameEntity.AddComponent<SpriteComponent>("flame", 2, 3, false, true);
 
-    Entity& manEntity(g_entityManager.AddEntity("Man", G_NPC_LAYER));
-    manEntity.AddComponent<TransformComponent>(1600, 0, -35, 10, 32, 32, 1);
-    manEntity.AddComponent<SpriteComponent>("man");    
-    manEntity.AddComponent<ColliderComponent>("Man", 1600, 0, 32, 32);
-
     Entity& bowlingEntity(g_entityManager.AddEntity("Bowling", G_PROJECTILE_LAYER));
     bowlingEntity.AddComponent<TransformComponent>(1600, 30, -119, 13, 32, 32, 1);
     bowlingEntity.AddComponent<SpriteComponent>("bowling");
-
-    Entity& dogEntity(g_entityManager.AddEntity("Dog", G_NPC_LAYER));
-    dogEntity.AddComponent<TransformComponent>(1700, 30, -120, 11, 32, 32, 1);
-    dogEntity.AddComponent<SpriteComponent>("dog");
 
     Entity& parkEntity(g_entityManager.AddEntity("Park", G_DECOR_LAYER));
     parkEntity.AddComponent<TransformComponent>(50, 700, 0, 0, 32, 32, 8);
@@ -247,10 +248,10 @@ void Game::SetDrawColour(int red, int green, int blue, int opacity) {
 
 void Game::UpdateFPSCounter(float deltaTime) {
     sprintf_s(m_fpsCounterBuffer, "FPS: %.2f", 1.0 / deltaTime);                                             // take deltaTime, use sprintf to convert to char array and update m_fpsCounterBuffer
-    m_surfaceMessage = TTF_RenderText_Solid(m_arialFont, m_fpsCounterBuffer, { 255, 255, 255 });    // update m_surfaceMessage with the latest FPS counter.
-    m_fpsTexture = SDL_CreateTextureFromSurface(g_renderer, m_surfaceMessage);                      // convert to texture
+    m_surfaceMessage = TTF_RenderText_Solid(m_arialFont, m_fpsCounterBuffer, { 255, 255, 255 });             // update m_surfaceMessage with the latest FPS counter.
+    m_fpsTexture = SDL_CreateTextureFromSurface(g_renderer, m_surfaceMessage);                                // convert to texture
     
-    SDL_FreeSurface(m_surfaceMessage);                                                              // free the surface... I guess
+    SDL_FreeSurface(m_surfaceMessage);                                                                        // free the surface... I guess
 }
 
 void Game::RenderFPSCounter() {
