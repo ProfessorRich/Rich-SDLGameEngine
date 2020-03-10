@@ -1,11 +1,12 @@
 #ifndef KEYBOARDINPUTCOMPONENT_H
 #define KEYBOARDINPUTCOMPONENT_H
 
+#include <string>
+
 #include "Game.h"
 #include "EntityManager.h"
 #include "SpriteComponent.h"
 #include "TransformComponent.h"
-#include <string>
 
 class KeyboardInputComponent : public Component {
 public:
@@ -41,7 +42,7 @@ public:
 		g_sprite = g_owner->GetComponent<SpriteComponent>();
 	}
 
-	void Update(float deltaTime) override {
+	void Update(float deltaTime) override {				//TODO - This should be implimented more from Game.cpp::ProcessInput()
 		if (Game::g_event.type == SDL_KEYDOWN) {
 			std::string keyCode = std::to_string(Game::g_event.key.keysym.sym);
 

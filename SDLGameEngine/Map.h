@@ -11,12 +11,14 @@ private:
 public:
 	Map(std::string textureId, int scale, int tileSize);
 	~Map();
+
 	void LoadMap(std::string filePath, int mapSizeX, int mapSizeY);
 	void AddTile(int sourceX, int sourceY, int destX, int destY);
-	unsigned int GetMapWidth();
-	unsigned int GetMapHeight();
-	unsigned int GetTileSize();
-	unsigned int GetScale();
+
+	unsigned int GetMapWidth() const;
+	unsigned int GetMapHeight() const;
+	unsigned int GetTileSize() const;
+	unsigned int GetScale() const;
 };
 
 #endif

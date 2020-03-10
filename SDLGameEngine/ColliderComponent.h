@@ -3,10 +3,10 @@
 
 #include <SDL.h>
 #include <string>
+
 #include "Game.h"
 #include "EntityManager.h"
 #include "TransformComponent.h"
-
 
 class ColliderComponent : public Component {
 public:

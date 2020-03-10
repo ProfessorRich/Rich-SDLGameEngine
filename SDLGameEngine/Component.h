@@ -1,8 +1,9 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-#include "Entity.h"
 #include <iostream>
+
+#include "Entity.h"
 
 // holder class so that this can compile and then Entity and EntityManager can compile after this!
 class Entity;	

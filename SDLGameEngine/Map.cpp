@@ -1,5 +1,6 @@
-#include "Map.h"
 #include <fstream>
+
+#include "Map.h"
 #include "Game.h"
 #include "EntityManager.h"
 #include "TileComponent.h"
@@ -44,17 +45,17 @@ void Map::AddTile(int sourceX, int sourceY, int destX, int destY) {
 	newTile.AddComponent<TileComponent>(sourceX, sourceY, destX, destY, m_tileSize, m_scale, m_textureId);
 }
 
-unsigned int Map::GetMapWidth() {
+unsigned int Map::GetMapWidth() const {
 	return m_mapSizeX;
 }
-unsigned int Map::GetMapHeight() {
+unsigned int Map::GetMapHeight() const {
 	return m_mapSizeY;
 }
 
-unsigned int Map::GetTileSize() {
+unsigned int Map::GetTileSize() const {
 	return m_tileSize;
 }
 
-unsigned int Map::GetScale() {
+unsigned int Map::GetScale() const {
 	return m_scale;
 }

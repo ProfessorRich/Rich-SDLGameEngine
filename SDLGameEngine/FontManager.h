@@ -1,9 +1,10 @@
 #ifndef FONTMANAGER_H
 #define FONTMANAGER_H
 
-#include "Game.h"
 #include <SDL.h>
 #include <SDL_ttf.h>
+
+#include "Game.h"
 
 class FontManager {
 public:

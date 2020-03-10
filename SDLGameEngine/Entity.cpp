@@ -32,7 +32,6 @@ std::string Entity::GetName() {
 	return m_name;
 }
 
-
 // The nature of the TypeMap is such that it will only return one entry when there are two components of the same type. This is potentially a problem if, e.g., two components of same type added by mistake and it creates a problem.
 void Entity::ListAllComponents() const {
 

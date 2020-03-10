@@ -1,12 +1,13 @@
 #ifndef TRANSFORMCOMPONENT_H
 #define TRANSFORMCOMPONENT_H
 
+#include <SDL.h>
+#include <iostream>
+#include <glm.hpp>
+
 #include "EntityManager.h"
 #include "Map.h"
 #include "Game.h"
-#include "glm.hpp"
-#include <SDL.h>
-#include <iostream>
 
 // defined in Game.h - LoadLevel function
 extern Map* g_map;												
@@ -56,12 +57,12 @@ public:
 		}
 
 		if (g_position.x >= xMax) {
-			g_position.x = xMax;
+			g_position.x = static_cast<float>(xMax);
 			g_velocity.x = 0;
 		}
 
 		if (g_position.y >= yMax) {
-			g_position.y = yMax;
+			g_position.y = static_cast<float>(yMax);
 			g_velocity.y = 0;
 		}
 	}

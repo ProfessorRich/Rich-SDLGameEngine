@@ -4,6 +4,7 @@
 // I don't really like this one AT ALL.
 
 #include <glm.hpp>
+
 #include "EntityManager.h"
 #include "TransformComponent.h"
 

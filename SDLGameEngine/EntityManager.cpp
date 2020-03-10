@@ -1,7 +1,9 @@
+#include <iostream>
+
 #include "EntityManager.h"
 #include "ColliderComponent.h"
 #include "Collision.h"
-#include <iostream>
+
 
 void EntityManager::ClearData() {
 	for (auto& entity : m_entities) {
@@ -23,7 +25,7 @@ void EntityManager::Update(float deltaTime) {		//TODO - is this working OK??
 	}
 }
 
-void EntityManager::Render() {
+void EntityManager::Render() const {
 	for (int i = 0; i < G_NUM_RENDER_LAYERS; i++) {
 		for (auto& entity : GetEntitiesByLayer(static_cast<RenderLayer>(i))) {
 			entity->Render();
@@ -37,7 +39,7 @@ void EntityManager::Destroy() {
 	}
 }
 
-bool EntityManager::HasNoEntities()
+bool EntityManager::HasNoEntities() const
 {
 	return m_entities.size() == 0;
 }
@@ -91,7 +93,7 @@ void EntityManager::CheckCollisionType(ColliderComponent* thisCollider, Collider
 	}
 }
 
-unsigned int EntityManager::GetEntityCount()
+unsigned int EntityManager::GetEntityCount() const
 {
 	return m_entities.size();
 }

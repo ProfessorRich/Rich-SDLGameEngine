@@ -2,7 +2,8 @@
 #define SPRITECOMPONENT_H
 
 #include <SDL.h>
-#include <string.h>
+#include <string>
+
 #include "TextureManager.h"
 #include "AssetManager.h"
 #include "TransformComponent.h"

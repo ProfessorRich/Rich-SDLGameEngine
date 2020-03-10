@@ -1,7 +1,8 @@
 #include <iostream>
-#include "./Constants.h"
-#include "./Game.h"
-#include "glm.hpp"
+#include <glm.hpp>
+
+#include "Constants.h"
+#include "Game.h"
 #include "TransformComponent.h"
 #include "AssetManager.h"
 #include "SpriteComponent.h"
@@ -251,6 +252,7 @@ void Game::Destroy() {
     SDL_Quit();
 }
 
+// Why did I bother? TODO - remove this 
 void Game::SetDrawColour(int red, int green, int blue, int opacity) {
     SDL_SetRenderDrawColor(g_renderer, red, green, blue, opacity);
 }

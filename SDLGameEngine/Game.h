@@ -1,10 +1,11 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "EntityManager.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+
+#include "EntityManager.h"
 
 class AssetManager;
 
