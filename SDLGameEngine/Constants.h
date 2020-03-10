@@ -1,14 +1,16 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <SDL.h>
+
 // set true to enable debug features
 const bool G_DEBUG = true;						
 
 const unsigned int G_WINDOW_WIDTH = 1600;
 const unsigned int G_WINDOW_HEIGHT = 900;
 
-const unsigned int G_FPS_COUNTER_WIDTH = 100;
-const unsigned int G_FPS_COUNTER_HEIGHT = 21;
+const unsigned int G_FPS_COUNTER_POSX = 10;
+const unsigned int G_FPS_COUNTER_POSY = 10;
 
 const unsigned int G_TARGET_FPS = 120;
 const float G_TARGET_DELTA_MS = 1000.0f / G_TARGET_FPS;
@@ -26,5 +28,8 @@ enum RenderLayer {
 };
 
 const unsigned int G_NUM_RENDER_LAYERS = 9;
+
+const SDL_Colour G_WHITE_COLOUR = { 255,255,255,255 };
+const SDL_Colour G_RED_COLOUR = { 255,0,0,255 };
 
 #endif

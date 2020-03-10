@@ -14,12 +14,8 @@ private:
     SDL_Window* m_window;
     int m_ticksLastFrame = 0;
 
-    TTF_Font* m_arialFont;
-
     // Used for the FPS counter
     char m_fpsCounterBuffer[25];
-    SDL_Surface* m_surfaceMessage;
-    SDL_Texture* m_fpsTexture;
     SDL_Rect m_fpsBox;
 
 public:

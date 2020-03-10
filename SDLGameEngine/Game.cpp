@@ -9,6 +9,7 @@
 #include "Map.h"
 #include "TileComponent.h"
 #include "ColliderComponent.h"
+#include "TextComponent.h"
 
 EntityManager g_entityManager;
 AssetManager* Game::g_assetManager = new AssetManager(&g_entityManager);
@@ -63,12 +64,6 @@ void Game::Initialise(int width, int height) {
         return;
     }
 
-    // Load the font to arial.ttf
-    m_arialFont = TTF_OpenFont(".\\assets\\fonts\\arial.ttf", 24);
-
-    // Set location of fps counter
-    m_fpsBox = { 10, 10, G_FPS_COUNTER_WIDTH, G_FPS_COUNTER_HEIGHT };
-
     LoadLevel(0);
 
     m_isRunning = true;
@@ -78,17 +73,26 @@ void Game::Initialise(int width, int height) {
 // Add the player and make global! (l33t progr@ming skillz)
 Entity& g_playerEntity(g_entityManager.AddEntity("player", G_PLAYER_LAYER));
 
+//Create the fpsCounterEntity (for debugging) Obv global for mad props / skillz.    
+Entity& g_fpsCounterEntity(g_entityManager.AddEntity("fps_counter", G_GUI_LAYER));
+
 void Game::LoadLevel(int levelNumber) {
+    //Load fonts
+    std::string fontFilePath = ".\\assets\\fonts\\";        //Sets fonts path
+
+    g_assetManager->AddFont("system", 24, (fontFilePath + "arial.ttf").c_str());
+    g_assetManager->AddFont("normal", 14, (fontFilePath + "charriot.ttf").c_str());
+
     //Load tilemap
-    int mapScale, mapTileSize, mapWidth, mapHeight; //temperary for debugging
+    int mapScale, mapTileSize, mapWidth, mapHeight;         //temperary for debugging
     mapScale = 3;
-    mapTileSize = 32; // probably will never change
+    mapTileSize = 32;                                       // probably will never change
     mapWidth = 25;
     mapHeight = 20;
 
-    std::string mapFilePath = ".\\assets\\tilemaps\\";                        //Sets the tilemaps file path
+    std::string mapFilePath = ".\\assets\\tilemaps\\";      //Sets the tilemaps file path
 
-    g_assetManager->AddTexture("jungle-tiletexture", std::string(mapFilePath + "jungle.png").c_str());
+    g_assetManager->AddTexture("jungle-tiletexture", (mapFilePath + "jungle.png").c_str());
     g_map = new Map("jungle-tiletexture", mapScale, mapTileSize);
     g_map->LoadMap(".\\assets\\tilemaps\\jungle.map", mapWidth, mapHeight);
 
@@ -136,12 +140,19 @@ void Game::LoadLevel(int levelNumber) {
     parkEntity.AddComponent<TransformComponent>(50, 700, 0, 0, 32, 32, 8);
     parkEntity.AddComponent<SpriteComponent>("park");
 
-    //List entites and componenets (for debugging)
+    //Add text labels
+    Entity& textTest(g_entityManager.AddEntity("FontTest", G_GUI_LAYER));
+    textTest.AddComponent<TextComponent>(100, 100, "LEVEL ONE...", "normal", G_WHITE_COLOUR);
+
+    // DEBUG - list entities and components, and create TextComponent for the fps_counter entity
     if (G_DEBUG) {
         g_entityManager.ListAllEntities();
+
+        g_fpsCounterEntity.AddComponent<TextComponent>(G_FPS_COUNTER_POSX, G_FPS_COUNTER_POSY, "WAIT", "system", G_RED_COLOUR);
     }
 }
 
+// TODO:: Ideally the player controls should ALSO be processed here rather than in the KeyboardInputComponent...
 void Game::ProcessInput() {
     SDL_PollEvent(&g_event);
 
@@ -205,12 +216,7 @@ void Game::Render() {
     else {
         g_entityManager.Render();
     }
-
-    //FPS Counter for debug
-    if (G_DEBUG) {
-        RenderFPSCounter();
-    }
-    
+  
     // Swap the buffer with what is on screen
     SDL_RenderPresent(g_renderer);
 }
@@ -248,12 +254,5 @@ void Game::SetDrawColour(int red, int green, int blue, int opacity) {
 
 void Game::UpdateFPSCounter(float deltaTime) {
     sprintf_s(m_fpsCounterBuffer, "FPS: %.2f", 1.0 / deltaTime);                                             // take deltaTime, use sprintf to convert to char array and update m_fpsCounterBuffer
-    m_surfaceMessage = TTF_RenderText_Solid(m_arialFont, m_fpsCounterBuffer, { 255, 255, 255 });             // update m_surfaceMessage with the latest FPS counter.
-    m_fpsTexture = SDL_CreateTextureFromSurface(g_renderer, m_surfaceMessage);                                // convert to texture
-    
-    SDL_FreeSurface(m_surfaceMessage);                                                                        // free the surface... I guess
-}
-
-void Game::RenderFPSCounter() {
-    SDL_RenderCopyEx(Game::g_renderer, m_fpsTexture, NULL, &m_fpsBox, 0.0, NULL, SDL_FLIP_NONE);
+    g_fpsCounterEntity.GetComponent<TextComponent>()->ChangeText(m_fpsCounterBuffer);
 }
