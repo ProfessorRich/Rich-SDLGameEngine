@@ -10,6 +10,7 @@
 #include "TileComponent.h"
 #include "ColliderComponent.h"
 #include "TextComponent.h"
+#include "SpawnerComponent.h"
 
 EntityManager g_entityManager;
 AssetManager* Game::g_assetManager = new AssetManager(&g_entityManager);
@@ -102,15 +103,15 @@ void Game::LoadLevel(int levelNumber) {
 
     g_assetManager->AddTexture("heart", (textureFilePath + "heart.png").c_str());
     g_assetManager->AddTexture("man", (textureFilePath + "man.png").c_str());
-    g_assetManager->AddTexture("bowling", (textureFilePath + "bowling.png").c_str());
+    g_assetManager->AddTexture("bowl", (textureFilePath + "bowling.png").c_str());
     g_assetManager->AddTexture("dog", (textureFilePath + "dog.png").c_str());
     g_assetManager->AddTexture("flame", (textureFilePath + "flame-basic.png").c_str());
 
     //Load player components
-    g_playerEntity.AddComponent<TransformComponent>(800, 700, 0, 0, 32, 32, 2);
+    g_playerEntity.AddComponent<TransformComponent>(300, 300, 0, 0, 32, 32, 2);
     g_playerEntity.AddComponent<SpriteComponent>("player", 2, 6, true, false);
     g_playerEntity.AddComponent<KeyboardInputComponent>("up", "down", "left", "right", "space");
-    g_playerEntity.AddComponent<ColliderComponent>("PLAYER", 800, 700, 32, 32);
+    g_playerEntity.AddComponent<ColliderComponent>("PLAYER", 300, 300, 32, 32);
 
     //Load entities and related components
     Entity& heartEntity(g_entityManager.AddEntity("Heart", G_COLLECTABLE_LAYER));
@@ -132,9 +133,11 @@ void Game::LoadLevel(int levelNumber) {
     flameEntity.AddComponent<TransformComponent>(0, G_WINDOW_HEIGHT-64, 0, 0, 64, 64, 1);
     flameEntity.AddComponent<SpriteComponent>("flame", 2, 3, false, true);
 
-    Entity& bowlingEntity(g_entityManager.AddEntity("Bowling", G_PROJECTILE_LAYER));
-    bowlingEntity.AddComponent<TransformComponent>(1600, 30, -119, 13, 32, 32, 1);
-    bowlingEntity.AddComponent<SpriteComponent>("bowling");
+    Entity& projectileEntity(g_entityManager.AddEntity("Bowl", G_PROJECTILE_LAYER));
+    projectileEntity.AddComponent<TransformComponent>(1600, 30, -119, 13, 32, 32, 1);
+    projectileEntity.AddComponent<SpriteComponent>("bowl");
+    projectileEntity.AddComponent<ColliderComponent>("PROJECTILE", 1600, 30, 32, 32);
+    projectileEntity.AddComponent<SpawnerComponent>(180, 200, 300, true);
 
     Entity& parkEntity(g_entityManager.AddEntity("Park", G_DECOR_LAYER));
     parkEntity.AddComponent<TransformComponent>(50, 700, 0, 0, 32, 32, 8);
