@@ -7,6 +7,8 @@
 #include <vector>
 #include <string>
 
+class ColliderComponent;							
+
 class EntityManager {
 private:
 	std::vector<Entity*> m_entities;
@@ -21,7 +23,8 @@ public:
 	Entity& AddEntity(std::string entityName, RenderLayer layer);
 	std::vector<Entity*> GetEntities() const;
 	std::vector<Entity*> GetEntitiesByLayer(RenderLayer layer) const;
-	std::string CheckAllCollisions();
+	std::string CheckAllCollisions() const;
+	void CheckCollisionType(ColliderComponent*, ColliderComponent*) const;
 	unsigned int GetEntityCount();
 	void ListAllEntities() const;
 };
