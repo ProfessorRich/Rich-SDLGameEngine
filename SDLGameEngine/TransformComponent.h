@@ -7,8 +7,6 @@
 #include <SDL.h>
 #include <iostream>
 
-class KeyboardInputComponent; 
-
 class TransformComponent : public Component {
 public:
 	glm::vec2 g_position;
@@ -30,9 +28,9 @@ public:
 
 	void Update(float deltaTime) {
 		Move(deltaTime);
-		if (g_owner->HasComponent<KeyboardInputComponent>()) {		// if it's a controllable entity, keep it in certain boundaries
+		/* if (g_owner->HasComponent<KeyboardInputComponent>()) {		// if it's a controllable entity, keep it in certain boundaries
 			FixBounds();
-		}
+		}*/
 	}
 
 	void Move(float deltaTime) {
@@ -69,12 +67,9 @@ public:
 	}
 
 	void Render() {
-
+		// overridden by SpriteComponent
 	}
 
-	/*std::string StringOutputType() {
-		return "Component<TransformComponent>";
-	}*/
 };
 
 #endif

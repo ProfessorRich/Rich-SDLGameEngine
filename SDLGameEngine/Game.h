@@ -13,7 +13,14 @@ private:
     bool m_isRunning;
     SDL_Window* m_window;
     int m_ticksLastFrame = 0;
-    // int m_colourCycle = 0;
+
+    TTF_Font* m_arialFont;
+
+    // Used for the FPS counter
+    char m_fpsCounterBuffer[25];
+    SDL_Surface* m_surfaceMessage;
+    SDL_Texture* m_fpsTexture;
+    SDL_Rect m_fpsBox;
 
 public:
     // static EntityManager g_entityManager; // I guess it's going TRULY global...
@@ -32,9 +39,13 @@ public:
     void Update();
     void Render();
     void HandleCameraMovement();
+    void CheckCollisions();
     void Destroy();
     void SetDrawColour(int r, int g, int b, int opacity);
     void LoadLevel(int levelNumber);
+
+    void UpdateFPSCounter(float deltaTime);
+    void RenderFPSCounter();
 };
 
 #endif

@@ -107,9 +107,6 @@ public:
 		TextureManager::Draw(m_texture, m_sourceRectangle, m_destinationRectangle, g_spriteFlip);
 	}
 
-	/*std::string StringOutputType() {
-		return "Component<SpriteComponent>";
-	}*/
 
 };
 

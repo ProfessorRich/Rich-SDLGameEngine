@@ -8,6 +8,7 @@
 #include "KeyboardInputComponent.h"
 #include "Map.h"
 #include "TileComponent.h"
+#include "ColliderComponent.h"
 
 EntityManager g_entityManager;
 AssetManager* Game::g_assetManager = new AssetManager(&g_entityManager);
@@ -37,6 +38,11 @@ void Game::Initialise(int width, int height) {
         return;
     }
 
+    if (TTF_Init() != 0) {
+        std::cerr << "Error initializing SDL_ttf." << std::endl;
+        return;
+    }
+
    m_window = SDL_CreateWindow(
         NULL,
         SDL_WINDOWPOS_CENTERED,
@@ -57,6 +63,12 @@ void Game::Initialise(int width, int height) {
         return;
     }
 
+    // Load the font to arial.ttf
+    m_arialFont = TTF_OpenFont(".\\assets\\fonts\\arial.ttf", 24);
+
+    // Set location of fps counter
+    m_fpsBox = { 0,0,100,16 };
+
     LoadLevel(0);
 
     m_isRunning = true;
@@ -68,7 +80,6 @@ Entity& g_playerEntity(g_entityManager.AddEntity("Chopper", G_PLAYER_LAYER));
 
 void Game::LoadLevel(int levelNumber) {
     //Load tilemap
-
     int mapScale, mapTileSize, mapWidth, mapHeight; //temperary for debugging
     mapScale = 3;
     mapTileSize = 32; // probably will never change
@@ -95,19 +106,22 @@ void Game::LoadLevel(int levelNumber) {
     g_playerEntity.AddComponent<TransformComponent>(800, 700, 0, 0, 32, 32, 2);
     g_playerEntity.AddComponent<SpriteComponent>("chopper", 2, 6, true, false);
     g_playerEntity.AddComponent<KeyboardInputComponent>("up", "down", "left", "right", "space");
+    g_playerEntity.AddComponent<ColliderComponent>("Player", 800, 700, 32, 32);
 
     //Load entities and related components
+    Entity& heartEntity(g_entityManager.AddEntity("Heart", G_COLLECTABLE_LAYER));
+    heartEntity.AddComponent<TransformComponent>(800, 450, 1, -10, 32, 32, 1);
+    heartEntity.AddComponent<SpriteComponent>("heart");
+    heartEntity.AddComponent<ColliderComponent>("Heart", 800, 450, 32, 32);
+
     Entity& flameEntity(g_entityManager.AddEntity("Flame", G_GUI_LAYER));
     flameEntity.AddComponent<TransformComponent>(0, G_WINDOW_HEIGHT-64, 0, 0, 64, 64, 1);
     flameEntity.AddComponent<SpriteComponent>("flame", 2, 3, false, true);
 
     Entity& manEntity(g_entityManager.AddEntity("Man", G_NPC_LAYER));
     manEntity.AddComponent<TransformComponent>(1600, 0, -35, 10, 32, 32, 1);
-    manEntity.AddComponent<SpriteComponent>("man");
-
-    Entity& heartEntity(g_entityManager.AddEntity("Heart", G_COLLECTABLE_LAYER));
-    heartEntity.AddComponent<TransformComponent>(800, 450, 1, -10, 32, 32, 1);
-    heartEntity.AddComponent<SpriteComponent>("heart");
+    manEntity.AddComponent<SpriteComponent>("man");    
+    manEntity.AddComponent<ColliderComponent>("Man", 1600, 0, 32, 32);
 
     Entity& bowlingEntity(g_entityManager.AddEntity("Bowling", G_PROJECTILE_LAYER));
     bowlingEntity.AddComponent<TransformComponent>(1600, 30, -119, 13, 32, 32, 1);
@@ -122,7 +136,9 @@ void Game::LoadLevel(int levelNumber) {
     parkEntity.AddComponent<SpriteComponent>("park");
 
     //List entites and componenets (for debugging)
-    g_entityManager.ListAllEntities();                
+    if (G_DEBUG) {
+        g_entityManager.ListAllEntities();
+    }
 }
 
 void Game::ProcessInput() {
@@ -150,7 +166,7 @@ glm::vec2 g_projectileVel = glm::vec2(20.0f, 20.0f);
 
 void Game::Update() {
     // Wait till G_TARGET_DELTA_MS passed since m_ticksLastFrame thereby allowing function to loop maximally G_TARGET_FPS times per second.
-    while (!SDL_TICKS_PASSED(SDL_GetTicks(), m_ticksLastFrame + G_TARGET_DELTA_MS));
+    while (!SDL_TICKS_PASSED(SDL_GetTicks(), static_cast<float>(m_ticksLastFrame) + G_TARGET_DELTA_MS));
     
     // How much time in s has passed since last frame?
     float deltaTime = (SDL_GetTicks() - m_ticksLastFrame) / 1000.0f;    
@@ -160,21 +176,25 @@ void Game::Update() {
 
     m_ticksLastFrame = SDL_GetTicks();
 
-    // FPS Counter
-    // std::cout << 1.0/deltaTime << std::endl; 
+    //FPS Counter
+    if (G_DEBUG) {
+        UpdateFPSCounter(deltaTime);
+    }
 
     // Move entities by proportionally how much deltaTime has passed in s since last frame.
     g_entityManager.Update(deltaTime);   
 
     // Move the g_camera SDL_Rect
     HandleCameraMovement();
+
+    // Check Collisions
+    CheckCollisions();
 }
 
 void Game::Render() {
 
     // Clear the buffer
     SetDrawColour(21, 21, 21, 255); //the grey background
-    // SetDrawColour(255, 255, 255, 255);  //white
     SDL_RenderClear(g_renderer);
 
     // Render some game stuff in the buffer
@@ -184,17 +204,21 @@ void Game::Render() {
     else {
         g_entityManager.Render();
     }
+
+    //FPS Counter for debug
+    if (G_DEBUG) {
+        RenderFPSCounter();
+    }
     
     // Swap the buffer with what is on screen
     SDL_RenderPresent(g_renderer);
-
 }
 
 void Game::HandleCameraMovement() {
     TransformComponent* trackingObjectTransform = g_playerEntity.GetComponent<TransformComponent>();
     
-    g_camera.x = trackingObjectTransform->g_position.x - (G_WINDOW_WIDTH / 2);
-    g_camera.y = trackingObjectTransform->g_position.y - (G_WINDOW_HEIGHT / 2);
+    g_camera.x = static_cast<int>(trackingObjectTransform->g_position.x - (G_WINDOW_WIDTH / 2));
+    g_camera.y = static_cast<int>(trackingObjectTransform->g_position.y - (G_WINDOW_HEIGHT / 2));
 
     // CLAMP the camera to the play area
     if (g_camera.x < 0) g_camera.x = 0;
@@ -207,6 +231,10 @@ void Game::HandleCameraMovement() {
     if (g_camera.y > cameraYLimit) g_camera.y = cameraYLimit;
 }
 
+void Game::CheckCollisions() {
+    std::cout << g_entityManager.CheckAllCollisions();
+}
+
 void Game::Destroy() {
     SDL_DestroyRenderer(g_renderer);
     SDL_DestroyWindow(m_window);
@@ -215,4 +243,16 @@ void Game::Destroy() {
 
 void Game::SetDrawColour(int red, int green, int blue, int opacity) {
     SDL_SetRenderDrawColor(g_renderer, red, green, blue, opacity);
+}
+
+void Game::UpdateFPSCounter(float deltaTime) {
+    sprintf_s(m_fpsCounterBuffer, "FPS: %.2f", 1.0 / deltaTime);                                             // take deltaTime, use sprintf to convert to char array and update m_fpsCounterBuffer
+    m_surfaceMessage = TTF_RenderText_Solid(m_arialFont, m_fpsCounterBuffer, { 255, 255, 255 });    // update m_surfaceMessage with the latest FPS counter.
+    m_fpsTexture = SDL_CreateTextureFromSurface(g_renderer, m_surfaceMessage);                      // convert to texture
+    
+    SDL_FreeSurface(m_surfaceMessage);                                                              // free the surface... I guess
+}
+
+void Game::RenderFPSCounter() {
+    SDL_RenderCopyEx(Game::g_renderer, m_fpsTexture, NULL, &m_fpsBox, 0.0, NULL, SDL_FLIP_NONE);
 }

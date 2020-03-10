@@ -21,6 +21,7 @@ public:
 	Entity& AddEntity(std::string entityName, RenderLayer layer);
 	std::vector<Entity*> GetEntities() const;
 	std::vector<Entity*> GetEntitiesByLayer(RenderLayer layer) const;
+	std::string CheckAllCollisions();
 	unsigned int GetEntityCount();
 	void ListAllEntities() const;
 };

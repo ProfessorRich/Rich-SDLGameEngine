@@ -50,11 +50,7 @@ public:
 
 	template <typename T>
 	bool HasComponent() const {
-		bool found = false;
-		for (auto& component : m_componentTypeMap) {
-			if (&typeid(T) == component.first) found = true;
-		}
-		return found;
+		return m_componentTypeMap.count(&typeid(T));
 	}
 
 };

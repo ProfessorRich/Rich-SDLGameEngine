@@ -1,4 +1,6 @@
 #include "EntityManager.h"
+#include "ColliderComponent.h"
+#include "Collision.h"
 #include <iostream>
 
 void EntityManager::ClearData() {
@@ -57,6 +59,23 @@ std::vector<Entity*> EntityManager::GetEntitiesByLayer(RenderLayer layer) const
 		}
 	}
 	return entitiesByLayer;
+}
+
+// The function to check all collisions... might be horribly inefficient?
+std::string EntityManager::CheckAllCollisions() {
+	
+	for (unsigned int i = 0; i < (m_entities.size()-1); i++) {																	// -1 as last element will have already been checked against all others
+		if (m_entities[i]->HasComponent<ColliderComponent>()) {															// Is it a collider?
+			for (unsigned int j = (i + 1); j < (m_entities.size() - 1); j++) {
+				if (m_entities[j]->HasComponent<ColliderComponent>()) {			
+					if (Collision::CheckRectangleCollision(m_entities[i]->GetComponent<ColliderComponent>()->g_hitBox, m_entities[j]->GetComponent<ColliderComponent>()->g_hitBox)) {
+						std::cout << m_entities[i]->GetName() << " has collided with " << m_entities[j]->GetName() << std::endl;
+					}
+				}
+			}
+		}
+	}
+	return std::string();
 }
 
 unsigned int EntityManager::GetEntityCount()
