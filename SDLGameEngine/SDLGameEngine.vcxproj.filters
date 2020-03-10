@@ -98,5 +98,8 @@
     <ClInclude Include="TextComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SpawnerComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
