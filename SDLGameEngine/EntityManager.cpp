@@ -12,7 +12,7 @@ void EntityManager::ClearData() {
 EntityManager::EntityManager() {
 }
 
-void EntityManager::Update(float deltaTime) {
+void EntityManager::Update(float deltaTime) {		//TODO - is this working OK??
 	for (unsigned int i = 0; i < m_entities.size(); i++) {
 		if (!m_entities[i]->IsActive()) {
 			m_entities.erase(m_entities.begin() + i);
