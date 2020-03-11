@@ -1,5 +1,6 @@
 #include <iostream>
 #include <glm.hpp>
+#include <sol.hpp>
 
 #include "Constants.h"
 #include "Game.h"
@@ -15,15 +16,16 @@
 
 EntityManager g_entityManager;
 AssetManager* Game::g_assetManager = new AssetManager(&g_entityManager);
-SDL_Renderer* Game::g_renderer;         //Initialise static pointer an SDL_Renderer called m_renderer
+SDL_Renderer* Game::g_renderer;         // Declare static pointer an SDL_Renderer called g_renderer
 SDL_Event Game::g_event;
 SDL_Rect Game::g_camera = { 0,0,G_WINDOW_WIDTH, G_WINDOW_HEIGHT };
-Map* g_map;
+Map* g_map;                  
 
 Game::Game() {
     m_isRunning = false;
     g_renderer = NULL;
     m_window = nullptr;
+    g_map = new Map;                // Without this, game crashes if no map is loaded due to calls to .GetMapWidth() etc.
     // g_mapHeight = g_mapWidth = 0; GIMPED
 }
 
@@ -66,7 +68,7 @@ void Game::Initialise(int width, int height) {
         return;
     }
 
-    LoadLevel(0);
+    LoadLevel(1);
 
     m_isRunning = true;
     return;
@@ -79,47 +81,98 @@ Entity& g_playerEntity(g_entityManager.AddEntity("player", G_PLAYER_LAYER));
 Entity& g_fpsCounterEntity(g_entityManager.AddEntity("fps_counter", G_GUI_LAYER));
 
 void Game::LoadLevel(int levelNumber) {
-    //Load fonts
-    std::string fontFilePath = ".\\assets\\fonts\\";        //Sets fonts path
+    // LUA load
+    // Declare sol::state to use sol.hpp to manage lua (api-ish). Then open some lua libraries.
+    sol::state lua;
+    lua.open_libraries(sol::lib::base, sol::lib::os, sol::lib::math);
+    
+    // Creates a levelName using the int passed from Game::Initialise() then loads appropriate .lua
+    std::string levelName = "Level" + std::to_string(levelNumber);
+    lua.script_file(".\\assets\\scripts\\" + levelName + ".lua");
 
-    g_assetManager->AddFont("system", 24, (fontFilePath + "arial.ttf").c_str());
-    g_assetManager->AddFont("normal", 14, (fontFilePath + "charriot.ttf").c_str());
+    // Makes a sol::table to contain the data using key of levelName
+    sol::table levelData = lua[levelName];
 
-    //Load tilemap
-    int mapScale, mapTileSize, mapWidth, mapHeight;         //temperary for debugging
-    mapScale = 3;
-    mapTileSize = 32;                                       // probably will never change
-    mapWidth = 25;
-    mapHeight = 20;
+    /************************************************************/
+    /* LOADS ASSETS FROM LUA CONFIG                             */
+    /************************************************************/
+    sol::table levelAssets = levelData["assets"];
+    unsigned int assetReadIndex = 0;
+    bool readingAssets = true;
+    do {
+        sol::optional<sol::table> existsAssetIndexNode = levelAssets[assetReadIndex];
 
-    std::string mapFilePath = ".\\assets\\tilemaps\\";      //Sets the tilemaps file path
+        // If tries to read table but it's null then we're done reading from the file.
+        if (existsAssetIndexNode == sol::nullopt) {
+            readingAssets = false;
+        }
+        else if (assetReadIndex > 10000) {
+            std::cerr << "Error: assetReadIndex loop exceeded 10000. Not good.";
+            exit(0);
+        }
+        else {
+            sol::table asset = levelAssets[assetReadIndex];
+            std::string assetType = asset["type"];
+            if (assetType.compare("texture") == 0) {
+                std::string assetId = asset["id"];
+                std::string assetFile = asset["file"];
 
-    g_assetManager->AddTexture("jungle-tiletexture", (mapFilePath + "jungle.png").c_str());
-    g_map = new Map("jungle-tiletexture", mapScale, mapTileSize);
-    g_map->LoadMap(".\\assets\\tilemaps\\jungle.map", mapWidth, mapHeight);
+                g_assetManager->AddTexture(assetId, assetFile.c_str());
+            }
+            else if (assetType.compare("font") == 0) {
+                std::string assetId = asset["id"];
+                std::string assetFile = asset["file"];
+                unsigned int assetFontSize = asset["fontSize"];
 
-    //Load assets
+                g_assetManager->AddFont(assetId, assetFontSize, assetFile.c_str());
+            }
+        }
+        assetReadIndex++;
+    } while (readingAssets);
+
+    /************************************************************/
+    /* LOADS MAP FROM LUA CONFIG                                */
+    /************************************************************/
+    sol::table levelMap = levelData["map"];
+    std::string mapTextureId = levelMap["textureAssetId"];
+    std::string mapFile = levelMap["file"];
+
+    g_map = new Map(
+        mapTextureId,
+        static_cast<int>(levelMap["scale"]),
+        static_cast<int>(levelMap["tileSize"])
+    );
+
+    g_map->LoadMap(
+        mapFile,
+        static_cast<int>(levelMap["mapSizeX"]),
+        static_cast<int>(levelMap["mapSizeY"])
+    );
+
+    //Load player texture
     std::string textureFilePath = ".\\assets\\images\\";                        //Sets the images file path
     Game::g_assetManager->AddTexture("player", (textureFilePath + "chopper-spritesheet.png").c_str());
 
-    g_assetManager->AddTexture("heart", (textureFilePath + "heart.png").c_str());
-    g_assetManager->AddTexture("man", (textureFilePath + "man.png").c_str());
-    g_assetManager->AddTexture("bowl", (textureFilePath + "bowling.png").c_str());
-    g_assetManager->AddTexture("dog", (textureFilePath + "dog.png").c_str());
-    g_assetManager->AddTexture("flame", (textureFilePath + "flame-basic.png").c_str());
-
-    //Load player components
+    //Load player components and texture
     g_playerEntity.AddComponent<TransformComponent>(300, 300, 0, 0, 32, 32, 2);
     g_playerEntity.AddComponent<SpriteComponent>("player", 2, 6, true, false);
     g_playerEntity.AddComponent<KeyboardInputComponent>("up", "down", "left", "right", "space");
     g_playerEntity.AddComponent<ColliderComponent>("PLAYER", 300, 300, 32, 32);
 
+    //Load assets    
+    /*
+    g_assetManager->AddTexture("heart", (textureFilePath + "heart.png").c_str());
+    g_assetManager->AddTexture("man", (textureFilePath + "man.png").c_str());
+    g_assetManager->AddTexture("bowl", (textureFilePath + "bowling.png").c_str());
+    g_assetManager->AddTexture("dog", (textureFilePath + "dog.png").c_str());
+    g_assetManager->AddTexture("flame", (textureFilePath + "flame-basic.png").c_str());
+    
     //Load entities and related components
     Entity& heartEntity(g_entityManager.AddEntity("Heart", G_COLLECTABLE_LAYER));
     heartEntity.AddComponent<TransformComponent>(800, 450, 1, -10, 32, 32, 1);
     heartEntity.AddComponent<SpriteComponent>("heart");
     heartEntity.AddComponent<ColliderComponent>("HEART", 800, 450, 32, 32);
-
+    
     Entity& manEntity(g_entityManager.AddEntity("Man", G_NPC_LAYER));
     manEntity.AddComponent<TransformComponent>(1600, 0, -35, 10, 32, 32, 1);
     manEntity.AddComponent<SpriteComponent>("man");
@@ -147,13 +200,14 @@ void Game::LoadLevel(int levelNumber) {
     //Add text labels
     Entity& textTest(g_entityManager.AddEntity("FontTest", G_GUI_LAYER));
     textTest.AddComponent<TextComponent>(100, 100, "LEVEL ONE...", "normal", G_WHITE_COLOUR);
+    */
 
-    // DEBUG - list entities and components, and create TextComponent for the fps_counter entity
+    // DEBUG - list entities and components, and create TextComponent for the fps_counter entity 
     if (G_DEBUG) {
         g_entityManager.ListAllEntities();
 
         g_fpsCounterEntity.AddComponent<TextComponent>(G_FPS_COUNTER_POSX, G_FPS_COUNTER_POSY, "WAIT", "system", G_RED_COLOUR);
-    }
+    } 
 }
 
 // TODO:: Ideally the player controls should ALSO be processed here rather than in the KeyboardInputComponent...
@@ -213,9 +267,10 @@ void Game::Render() {
     SetDrawColour(21, 21, 21, 255); //the grey background
     SDL_RenderClear(g_renderer);
 
-    // Render some game stuff in the buffer
+    // Render some game stuff in the buffer  w/ all new code which prevents horrible CPU breaking loops when there are no entities.
     if (g_entityManager.HasNoEntities()) {
-        return;
+        std::cerr << "No entities detected. Any ideas why that might be Sherlock?" << std::endl;
+        exit(0);
     }
     else {
         g_entityManager.Render();
@@ -225,6 +280,7 @@ void Game::Render() {
     SDL_RenderPresent(g_renderer);
 }
 
+// HandleCameraMovement which unfortunately relies on hardcoded player entity. TODO sort that out.
 void Game::HandleCameraMovement() {
     TransformComponent* trackingObjectTransform = g_playerEntity.GetComponent<TransformComponent>();
     
