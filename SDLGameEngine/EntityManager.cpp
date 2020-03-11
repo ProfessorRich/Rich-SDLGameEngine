@@ -71,14 +71,19 @@ std::vector<Entity*> EntityManager::GetEntitiesByLayer(RenderLayer layer) const
 // The function to check all collisions... might be horribly inefficient?
 std::string EntityManager::CheckAllCollisions() const {
 	
-	for (unsigned int i = 0; i < (m_entities.size()-1); i++) {																	// -1 as last element will have already been checked against all others
-		if (m_entities[i]->HasComponent<ColliderComponent>()) {																	// Is it a collider?
-			ColliderComponent* thisCollider = m_entities[i]->GetComponent<ColliderComponent>();
-			for (unsigned int j = (i + 1); j < m_entities.size(); j++) {														// No -1 as the j loop DOES need to check even the last element.
-				if (m_entities[j]->HasComponent<ColliderComponent>()) {			
-					ColliderComponent* thatCollider = m_entities[j]->GetComponent<ColliderComponent>();
-					if (Collision::CheckRectangleCollision(thisCollider->g_hitBox, thatCollider->g_hitBox)) {
-						CheckCollisionType(thisCollider, thatCollider);
+	if (m_entities.size() < 2) {
+		return std::string();
+	}
+	else {
+		for (unsigned int i = 0; i < (m_entities.size() - 1); i++) {																	// -1 as last element will have already been checked against all others
+			if (m_entities[i]->HasComponent<ColliderComponent>()) {																	// Is it a collider?
+				ColliderComponent* thisCollider = m_entities[i]->GetComponent<ColliderComponent>();
+				for (unsigned int j = (i + 1); j < m_entities.size(); j++) {														// No -1 as the j loop DOES need to check even the last element.
+					if (m_entities[j]->HasComponent<ColliderComponent>()) {
+						ColliderComponent* thatCollider = m_entities[j]->GetComponent<ColliderComponent>();
+						if (Collision::CheckRectangleCollision(thisCollider->g_hitBox, thatCollider->g_hitBox)) {
+							CheckCollisionType(thisCollider, thatCollider);
+						}
 					}
 				}
 			}
