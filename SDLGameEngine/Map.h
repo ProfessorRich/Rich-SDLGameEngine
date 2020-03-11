@@ -9,6 +9,7 @@ private:
 	unsigned int m_scale, m_tileSize, m_mapSizeX, m_mapSizeY;
 
 public:
+	Map();
 	Map(std::string textureId, int scale, int tileSize);
 	~Map();
 
