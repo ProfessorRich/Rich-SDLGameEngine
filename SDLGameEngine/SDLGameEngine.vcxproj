@@ -88,13 +88,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Awareness\Desktop\Games Development\glm\glm;C:\Users\Awareness\Desktop\Games Development\SDL_ttf\include;C:\Users\Awareness\Desktop\Games Development\SDL_image\include;C:\Users\Awareness\Desktop\Games Development\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Awareness\Desktop\Games Development\lua\src;C:\Users\Awareness\Desktop\Games Development\glm\glm;C:\Users\Awareness\Desktop\Games Development\SDL_ttf\include;C:\Users\Awareness\Desktop\Games Development\SDL_image\include;C:\Users\Awareness\Desktop\Games Development\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Awareness\Desktop\Games Development\SDL\lib\x86;C:\Users\Awareness\Desktop\Games Development\SDL_image\lib\x86;C:\Users\Awareness\Desktop\Games Development\SDL_ttf\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Awareness\Desktop\Games Development\lua;C:\Users\Awareness\Desktop\Games Development\SDL\lib\x86;C:\Users\Awareness\Desktop\Games Development\SDL_image\lib\x86;C:\Users\Awareness\Desktop\Games Development\SDL_ttf\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;liblua53.a;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
