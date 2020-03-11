@@ -7,10 +7,16 @@
 
 extern EntityManager g_entityManager;
 
+Map::Map() {
+	m_mapSizeX = m_mapSizeY = m_scale = m_tileSize = 0;
+	m_textureId = "";
+}
+
 Map::Map(std::string textureId, int scale, int tileSize) {
 	m_textureId = textureId;
 	m_scale = scale;
 	m_tileSize = tileSize;
+	m_mapSizeX = m_mapSizeY = 0;
 }
 
 void Map::LoadMap(std::string filePath, int mapSizeX, int mapSizeY) {
