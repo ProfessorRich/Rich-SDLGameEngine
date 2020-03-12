@@ -28,7 +28,8 @@ public:
 
 		PrepareText();
 	}
-
+	
+	// TODO - make safer. Shouldn't crash if can't find font ID!
 	void PrepareText() {
 		SDL_Surface* textSurface = TTF_RenderText_Blended(Game::g_assetManager->GetFont(m_fontId), m_textContent.c_str(), m_colour);
 		m_texture = SDL_CreateTextureFromSurface(Game::g_renderer, textSurface);

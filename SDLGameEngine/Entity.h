@@ -45,7 +45,7 @@ public:
 
 	template <typename T>
 	T* GetComponent() {
-		return static_cast<T*>(m_componentTypeMap[&typeid(T)]);					// so ugly and very hard to understand. It gets the component typeid from the map.
+		return static_cast<T*>(m_componentTypeMap.at(&typeid(T)));					// so ugly and very hard to understand. It gets the component typeid from the map.
 	}
 
 	template <typename T>

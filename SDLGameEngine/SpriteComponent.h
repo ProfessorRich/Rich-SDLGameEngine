@@ -65,9 +65,9 @@ public:
 	}
 
 	void Play(std::string animationName) {
-		m_numFrames = m_animations[animationName].g_numFrames;
-		m_animationIndex = m_animations[animationName].g_index;
-		m_animationSpeed = m_animations[animationName].g_animationSpeed;
+		m_numFrames = m_animations.at(animationName).g_numFrames;
+		m_animationIndex = m_animations.at(animationName).g_index;
+		m_animationSpeed = m_animations.at(animationName).g_animationSpeed;
 
 		m_currentAnimationName = animationName;
 	}

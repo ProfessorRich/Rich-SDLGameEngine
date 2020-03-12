@@ -16,11 +16,11 @@ EntityManager::EntityManager() {
 
 void EntityManager::Update(float deltaTime) {		//TODO - is this working OK??
 	for (unsigned int i = 0; i < m_entities.size(); i++) {
-		if (!m_entities[i]->IsActive()) {
+		if (!m_entities.at(i)->IsActive()) {
 			m_entities.erase(m_entities.begin() + i);
 		}
 		else {
-			m_entities[i]->Update(deltaTime);
+			m_entities.at(i)->Update(deltaTime);
 		}
 	}
 }
@@ -76,11 +76,11 @@ std::string EntityManager::CheckAllCollisions() const {
 	}
 	else {
 		for (unsigned int i = 0; i < (m_entities.size() - 1); i++) {																	// -1 as last element will have already been checked against all others
-			if (m_entities[i]->HasComponent<ColliderComponent>()) {																	// Is it a collider?
-				ColliderComponent* thisCollider = m_entities[i]->GetComponent<ColliderComponent>();
+			if (m_entities.at(i)->HasComponent<ColliderComponent>()) {																	// Is it a collider?
+				ColliderComponent* thisCollider = m_entities.at(i)->GetComponent<ColliderComponent>();
 				for (unsigned int j = (i + 1); j < m_entities.size(); j++) {														// No -1 as the j loop DOES need to check even the last element.
-					if (m_entities[j]->HasComponent<ColliderComponent>()) {
-						ColliderComponent* thatCollider = m_entities[j]->GetComponent<ColliderComponent>();
+					if (m_entities.at(j)->HasComponent<ColliderComponent>()) {
+						ColliderComponent* thatCollider = m_entities.at(j)->GetComponent<ColliderComponent>();
 						if (Collision::CheckRectangleCollision(thisCollider->g_hitBox, thatCollider->g_hitBox)) {
 							CheckCollisionType(thisCollider, thatCollider);
 						}

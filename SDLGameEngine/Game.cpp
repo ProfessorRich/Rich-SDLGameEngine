@@ -149,6 +149,10 @@ void Game::LoadLevel(int levelNumber) {
         static_cast<int>(levelMap["mapSizeY"])
     );
 
+    /************************************************************/
+    /* LOADS ENTITIES FROM LUA CONFIG                           */
+    /************************************************************/
+
     //Load player texture
     std::string textureFilePath = ".\\assets\\images\\";                        //Sets the images file path
     Game::g_assetManager->AddTexture("player", (textureFilePath + "chopper-spritesheet.png").c_str());

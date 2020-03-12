@@ -18,9 +18,9 @@ void AssetManager::AddFont(std::string fontId, int fontSize, const char* filePat
 }
 
 SDL_Texture* AssetManager::GetTexture(std::string textureId) {
-	return m_textures[textureId];
+	return m_textures.at(textureId);
 }
 
 TTF_Font* AssetManager::GetFont(std::string fontId) {
-	return m_fonts[fontId];
+	return m_fonts.at(fontId);
 }
