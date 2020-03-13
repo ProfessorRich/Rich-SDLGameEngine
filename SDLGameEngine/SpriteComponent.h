@@ -16,8 +16,8 @@ private:
 	SDL_Rect m_sourceRectangle;						// the rectangle in the m_texture which contains the current sprite to be drawn
 	SDL_Rect m_destinationRectangle;				// the rectangle where the current sprite will be drawn on the screen
 	bool m_isAnimated;
-	int m_numFrames;
-	int m_animationSpeed;							// m_animationSpeed should be set between 1 and 10 
+	unsigned int m_numFrames;
+	unsigned int m_animationSpeed;							// m_animationSpeed should be set between 1 and 10 
 	bool m_isFixed;
 	std::map<std::string, Animation> m_animations;
 	std::string m_currentAnimationName;
@@ -29,6 +29,12 @@ public:
 	SpriteComponent(std::string assetTextureId) {
 		m_isAnimated = false;
 		m_isFixed = false;
+		SetTexture(assetTextureId);
+	}
+
+	SpriteComponent(std::string assetTextureId, bool isFixed) {
+		m_isAnimated = false;
+		m_isFixed = isFixed;
 		SetTexture(assetTextureId);
 	}
 
@@ -86,7 +92,13 @@ public:
 
 	void Update(float deltaTime) override {
 		if (m_isAnimated) {
-			m_sourceRectangle.x = (m_sourceRectangle.w * (static_cast<int>(SDL_GetTicks() / (1000 - ((1000 - 50) / 9) * (m_animationSpeed - 1))) % m_numFrames)); // Superl33t formula to ensure m_animationSpeed 1 - 10 provides number from 1000 to 50 which translates to speed which m_numFrames cycles. All my own work.
+			// Clamp that baitch to 10
+			if (m_animationSpeed > 10) {
+				m_animationSpeed = 10;
+			}
+
+			// Superl33t formula to ensure m_animationSpeed 1 - 10 provides number from 1000 to 50 which translates to speed which m_numFrames cycles. All my own work.
+			m_sourceRectangle.x = (m_sourceRectangle.w * (static_cast<int>(SDL_GetTicks() / (1000 - ((1000 - 50) / 9) * (m_animationSpeed - 1))) % m_numFrames)); 
 		}
 		m_sourceRectangle.y = m_animationIndex * m_transform->g_height;
 

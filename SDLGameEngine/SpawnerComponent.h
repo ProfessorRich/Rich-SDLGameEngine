@@ -4,42 +4,54 @@
 // I don't really like this one AT ALL.
 
 #include <glm.hpp>
+#include <iostream>
 
 #include "EntityManager.h"
 #include "TransformComponent.h"
+#include "ProjectileComponent.h"
+
+extern EntityManager g_entityManager;
 
 class SpawnerComponent : public Component {
 private:
 	TransformComponent* m_transform;
-	glm::vec2 m_origin;
 	int m_spawnSpeed;
 	float m_spawnAngle;
-	int m_range;
-	bool m_shouldItLoop;
-
+	int m_range, m_projectileWidth, m_projectileHeight;
+	bool m_shouldItLoop; 
+	std::string m_projectileTextureId;
+	 
 public:
-	SpawnerComponent(int spawnAngleInDegrees, int spawnSpeed, int range, bool shouldItLoop) {
-		m_spawnAngle = glm::radians(static_cast<float>(spawnAngleInDegrees));
+	SpawnerComponent(int spawnAngleInDegrees, int spawnSpeed, int range, bool shouldItLoop, int projectileWidth, int projectileHeight, std::string projectileTextureId) {
+		m_spawnAngle = spawnAngleInDegrees;
 		m_spawnSpeed = spawnSpeed;
 		m_range = range;
+		m_projectileWidth = projectileWidth;
+		m_projectileHeight = projectileHeight;
 		m_shouldItLoop = shouldItLoop;
+		m_projectileTextureId = projectileTextureId;
 	}
 
 	void Initialise() override {
 		m_transform = g_owner->GetComponent<TransformComponent>();
-		m_origin = glm::vec2(m_transform->g_position.x, m_transform->g_position.y);
 
-		m_transform->g_velocity = glm::vec2(glm::cos(m_spawnAngle) * m_spawnSpeed, glm::sin(m_spawnAngle) * m_spawnSpeed);
+		Entity& newProjectile = g_entityManager.AddEntity("projectile", G_PROJECTILE_LAYER);
+
+		newProjectile.AddComponent<TransformComponent>(
+			static_cast<int>((m_transform->g_position.x) + (m_transform->g_width / 2)),
+			static_cast<int>((m_transform->g_position.y) + (m_transform->g_height / 2)),
+			static_cast<int>(glm::cos(m_spawnAngle) * m_spawnSpeed),
+			static_cast<int>(glm::sin(m_spawnAngle) * m_spawnSpeed),
+			static_cast<int>(m_projectileWidth),
+			static_cast<int>(m_projectileHeight),
+			1 // projectile SCALE is not implemented - TODO
+			);
+		newProjectile.AddComponent<SpriteComponent>(m_projectileTextureId);
+		newProjectile.AddComponent<ProjectileComponent>(m_spawnAngle, m_spawnSpeed, m_range, m_shouldItLoop);
 	}
 
 	void Update(float deltaTime) override {
-		if (glm::distance(m_transform->g_position, m_origin) > m_range) {
-			if (m_shouldItLoop) {
-				m_transform->g_position = m_origin;
-			} else {
-				g_owner->Destroy();
-			}
-		}	
+
 	}
 };
 
