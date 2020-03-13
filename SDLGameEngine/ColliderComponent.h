@@ -14,6 +14,11 @@ public:
 	SDL_Rect g_hitBox;
 	TransformComponent* g_transform;
 
+	ColliderComponent(std::string colliderTag) {
+		g_colliderTag = colliderTag;
+		g_hitBox = { 0, 0, 0, 0 };  // I wonder if this will cause problems...
+	}
+
 	ColliderComponent(std::string colliderTag, int positionX, int positionY, int width, int height) {
 		g_colliderTag = colliderTag;
 		g_hitBox = { positionX, positionY, width, height };
