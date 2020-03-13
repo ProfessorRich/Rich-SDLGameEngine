@@ -45,7 +45,12 @@ public:
 
 	template <typename T>
 	T* GetComponent() {
-		return static_cast<T*>(m_componentTypeMap.at(&typeid(T)));					// so ugly and very hard to understand. It gets the component typeid from the map.
+		if (HasComponent<T>()) {
+			return static_cast<T*>(m_componentTypeMap.at(&typeid(T)));					// so ugly and very hard to understand. It gets the component typeid from the map.
+		}
+		else {
+			std::cerr << "Error: Component not found in entity!" << std::endl;
+		}
 	}
 
 	template <typename T>
