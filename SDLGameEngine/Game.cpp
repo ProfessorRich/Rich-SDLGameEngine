@@ -91,27 +91,28 @@ void Game::LoadLevel(int levelNumber) {
     lua.script_file(".\\assets\\scripts\\" + levelName + ".lua");
 
     // Makes a sol::table to contain the data using key of levelName
-    sol::table levelData = lua[levelName];
+    sol::table loadedLuaData = lua[levelName];
 
     /************************************************************/
     /* LOADS ASSETS FROM LUA CONFIG                             */
     /************************************************************/
-    sol::table levelAssets = levelData["assets"];
+    sol::table currentAssets = loadedLuaData["assets"];
     unsigned int assetReadIndex = 0;
     bool readingAssets = true;
     do {
-        sol::optional<sol::table> existsAssetIndexNode = levelAssets[assetReadIndex];
+        sol::optional<sol::table> existsAssetIndexNode = currentAssets[assetReadIndex];
 
         // If tries to read table but it's null then we're done reading from the file.
         if (existsAssetIndexNode == sol::nullopt) {
             readingAssets = false;
         }
         else if (assetReadIndex > 10000) {
+            readingAssets = false;
             std::cerr << "Error: assetReadIndex loop exceeded 10000. Not good.";
             exit(0);
         }
         else {
-            sol::table asset = levelAssets[assetReadIndex];
+            sol::table asset = currentAssets[assetReadIndex];
             std::string assetType = asset["type"];
             if (assetType.compare("texture") == 0) {
                 std::string assetId = asset["id"];
@@ -133,26 +134,113 @@ void Game::LoadLevel(int levelNumber) {
     /************************************************************/
     /* LOADS MAP FROM LUA CONFIG                                */
     /************************************************************/
-    sol::table levelMap = levelData["map"];
-    std::string mapTextureId = levelMap["textureAssetId"];
-    std::string mapFile = levelMap["file"];
+    sol::table currentMap = loadedLuaData["map"];
+    std::string mapTextureId = currentMap["textureAssetId"];
+    std::string mapFile = currentMap["file"];
 
     g_map = new Map(
         mapTextureId,
-        static_cast<int>(levelMap["scale"]),
-        static_cast<int>(levelMap["tileSize"])
+        static_cast<int>(currentMap["scale"]),
+        static_cast<int>(currentMap["tileSize"])
     );
 
     g_map->LoadMap(
         mapFile,
-        static_cast<int>(levelMap["mapSizeX"]),
-        static_cast<int>(levelMap["mapSizeY"])
+        static_cast<int>(currentMap["mapSizeX"]),
+        static_cast<int>(currentMap["mapSizeY"])
     );
 
     /************************************************************/
     /* LOADS ENTITIES FROM LUA CONFIG                           */
     /************************************************************/
+    sol::table currentEntities = loadedLuaData["entities"];
+    unsigned int entityReadIndex = 0;
+    bool readingEntities = true;
 
+    do {
+        sol::optional<sol::table> existsEntitiesIndexNode = currentEntities[entityReadIndex];
+
+        if (existsEntitiesIndexNode == sol::nullopt) {
+            readingEntities = false;
+        }
+        else if (entityReadIndex > 10000) {
+            readingEntities = false;
+            std::cerr << "Error: entityReadIndex loop exceeded 10000. Not good.";
+            exit(0);
+        }
+        else {
+            sol::table currentEntity = currentEntities[entityReadIndex];
+            std::string entityName = currentEntity["name"];
+            unsigned int entityLayer = currentEntity["layer"];
+
+            Entity& newEntity = g_entityManager.AddEntity(entityName, static_cast<RenderLayer>(entityLayer));
+
+            // Add Transform Component
+            sol::optional<sol::table> existsTransformComponent = currentEntity["components"]["transform"];
+            if (existsTransformComponent != sol::nullopt) {
+                newEntity.AddComponent<TransformComponent>(
+                    static_cast<int>(currentEntity["components"]["transform"]["position"]["x"]),
+                    static_cast<int>(currentEntity["components"]["transform"]["position"]["y"]),
+                    static_cast<int>(currentEntity["components"]["transform"]["velocity"]["x"]),
+                    static_cast<int>(currentEntity["components"]["transform"]["velocity"]["y"]),
+                    static_cast<int>(currentEntity["components"]["transform"]["width"]),
+                    static_cast<int>(currentEntity["components"]["transform"]["height"]),
+                    static_cast<int>(currentEntity["components"]["transform"]["scale"])
+                    );
+            }
+
+            // Add sprite component
+            sol::optional<sol::table> existsSpriteComponent = currentEntity["components"]["sprite"];
+            if (existsSpriteComponent != sol::nullopt) {
+                std::string textureId = currentEntity["components"]["sprite"]["textureAssetId"];
+                bool isAnimated = currentEntity["components"]["sprite"]["animated"];
+                if (isAnimated) {
+                    newEntity.AddComponent<SpriteComponent>(
+                        textureId,
+                        static_cast<int>(currentEntity["components"]["sprite"]["frameCount"]),
+                        static_cast<int>(currentEntity["components"]["sprite"]["animationSpeed"]),
+                        static_cast<bool>(currentEntity["components"]["sprite"]["hasDirections"]),
+                        static_cast<bool>(currentEntity["components"]["sprite"]["fixed"])
+                        );
+                }
+                else {
+                    sol::optional<bool> currentEntitySpriteIsFixed = currentEntity["components"]["sprite"]["fixed"];
+                    if (currentEntitySpriteIsFixed) {
+                        newEntity.AddComponent<SpriteComponent>(textureId, static_cast<bool>(currentEntity["components"]["sprite"]["fixed"]));
+                    }
+                    else {
+                        newEntity.AddComponent<SpriteComponent>(textureId, false);
+                    }
+                }
+            }
+
+            // Add collider component
+            sol::optional<sol::table> existsColliderComponent = currentEntity["components"]["collider"];
+            if (existsColliderComponent != sol::nullopt) {
+                std::string colliderTag = currentEntity["components"]["collider"]["tag"];
+
+                newEntity.AddComponent<ColliderComponent>(colliderTag);
+            }
+            
+            // Add spawner component 
+            sol::optional<sol::table> existsSpawnerComponent = currentEntity["components"]["spawner"];
+            if (existsSpawnerComponent != sol::nullopt) {
+                std::string textureAssetId = currentEntity["components"]["spawner"]["textureAssetId"];
+                newEntity.AddComponent<SpawnerComponent>(
+                    static_cast<int>(currentEntity["components"]["spawner"]["angle"]),
+                    static_cast<int>(currentEntity["components"]["spawner"]["speed"]),
+                    static_cast<int>(currentEntity["components"]["spawner"]["range"]),
+                    static_cast<bool>(currentEntity["components"]["spawner"]["shouldLoop"]),
+                    static_cast<int>(currentEntity["components"]["spawner"]["width"]),
+                    static_cast<int>(currentEntity["components"]["spawner"]["height"]),
+                    textureAssetId
+                    );
+            }
+        }
+        entityReadIndex++;
+
+    } while (readingEntities);
+       
     //Load player texture
     std::string textureFilePath = ".\\assets\\images\\";                        //Sets the images file path
     Game::g_assetManager->AddTexture("player", (textureFilePath + "chopper-spritesheet.png").c_str());
