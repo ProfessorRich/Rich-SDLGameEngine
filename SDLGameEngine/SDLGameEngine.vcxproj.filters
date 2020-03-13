@@ -77,9 +77,6 @@
     <ClInclude Include="ColliderComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="KeyboardInputComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
     <ClInclude Include="SpawnerComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
@@ -113,9 +110,12 @@
     <ClInclude Include="Component.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerControlComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\scripts\Level1.lua">
+    <None Include="assets\scripts\Data1.lua">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

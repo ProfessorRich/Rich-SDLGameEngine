@@ -1,5 +1,5 @@
-#ifndef KEYBOARDINPUTCOMPONENT_H
-#define KEYBOARDINPUTCOMPONENT_H
+#ifndef PLAYERCONTROLCOMPONENT_H
+#define PLAYERCONTROLCOMPONENT_H
 
 #include <string>
 
@@ -8,17 +8,17 @@
 #include "SpriteComponent.h"
 #include "TransformComponent.h"
 
-class KeyboardInputComponent : public Component {
+class PlayerControlComponent : public Component {
 public:
 	std::string g_moveUpKey, g_moveDownKey, g_moveLeftKey, g_moveRightKey, g_shootKey;
 	TransformComponent* g_transform;
 	SpriteComponent* g_sprite;
 
-	KeyboardInputComponent(){
+	PlayerControlComponent(){
 
 	}
 
-	KeyboardInputComponent(std::string up, std::string down, std::string left, std::string right, std::string shoot) {
+	PlayerControlComponent(std::string up, std::string down, std::string left, std::string right, std::string shoot) {
 		g_moveUpKey = GetSDLKeyStringCode(up);
 		g_moveDownKey = GetSDLKeyStringCode(down);
 		g_moveLeftKey = GetSDLKeyStringCode(left);

@@ -7,7 +7,7 @@
 #include "TransformComponent.h"
 #include "AssetManager.h"
 #include "SpriteComponent.h"
-#include "KeyboardInputComponent.h"
+#include "PlayerControlComponent.h"
 #include "Map.h"
 #include "TileComponent.h"
 #include "ColliderComponent.h"
@@ -26,7 +26,6 @@ Game::Game() {
     g_renderer = NULL;
     m_window = nullptr;
     g_map = new Map;                // Without this, game crashes if no map is loaded due to calls to .GetMapWidth() etc.
-    // g_mapHeight = g_mapWidth = 0; GIMPED
 }
 
 Game::~Game() {
@@ -68,7 +67,7 @@ void Game::Initialise(int width, int height) {
         return;
     }
 
-    LoadLevel(1);
+    LoadData(1);
 
     m_isRunning = true;
     return;
@@ -80,18 +79,18 @@ Entity& g_playerEntity(g_entityManager.AddEntity("player", G_PLAYER_LAYER));
 //Create the fpsCounterEntity (for debugging) Obv global for mad props / skillz.    
 Entity& g_fpsCounterEntity(g_entityManager.AddEntity("fps_counter", G_GUI_LAYER));
 
-void Game::LoadLevel(int levelNumber) {
+void Game::LoadData(int dataFileNo) {
     // LUA load
     // Declare sol::state to use sol.hpp to manage lua (api-ish). Then open some lua libraries.
     sol::state lua;
     lua.open_libraries(sol::lib::base, sol::lib::os, sol::lib::math);
     
     // Creates a levelName using the int passed from Game::Initialise() then loads appropriate .lua
-    std::string levelName = "Level" + std::to_string(levelNumber);
-    lua.script_file(".\\assets\\scripts\\" + levelName + ".lua");
+    std::string dataFileName = "Data" + std::to_string(dataFileNo);
+    lua.script_file(".\\assets\\scripts\\" + dataFileName + ".lua");
 
     // Makes a sol::table to contain the data using key of levelName
-    sol::table loadedLuaData = lua[levelName];
+    sol::table loadedLuaData = lua[dataFileName];
 
     /************************************************************/
     /* LOADS ASSETS FROM LUA CONFIG                             */
@@ -243,56 +242,13 @@ void Game::LoadLevel(int levelNumber) {
        
     //Load player texture
     std::string textureFilePath = ".\\assets\\images\\";                        //Sets the images file path
-    Game::g_assetManager->AddTexture("player", (textureFilePath + "chopper-spritesheet.png").c_str());
+    Game::g_assetManager->AddTexture("player", (textureFilePath + "player-sheet.png").c_str());
 
     //Load player components and texture
     g_playerEntity.AddComponent<TransformComponent>(300, 300, 0, 0, 32, 32, 2);
     g_playerEntity.AddComponent<SpriteComponent>("player", 2, 6, true, false);
-    g_playerEntity.AddComponent<KeyboardInputComponent>("up", "down", "left", "right", "space");
+    g_playerEntity.AddComponent<PlayerControlComponent>("up", "down", "left", "right", "space");
     g_playerEntity.AddComponent<ColliderComponent>("PLAYER", 300, 300, 32, 32);
-
-    //Load assets    
-    /*
-    g_assetManager->AddTexture("heart", (textureFilePath + "heart.png").c_str());
-    g_assetManager->AddTexture("man", (textureFilePath + "man.png").c_str());
-    g_assetManager->AddTexture("bowl", (textureFilePath + "bowling.png").c_str());
-    g_assetManager->AddTexture("dog", (textureFilePath + "dog.png").c_str());
-    g_assetManager->AddTexture("flame", (textureFilePath + "flame-basic.png").c_str());
-    
-    //Load entities and related components
-    Entity& heartEntity(g_entityManager.AddEntity("Heart", G_COLLECTABLE_LAYER));
-    heartEntity.AddComponent<TransformComponent>(800, 450, 1, -10, 32, 32, 1);
-    heartEntity.AddComponent<SpriteComponent>("heart");
-    heartEntity.AddComponent<ColliderComponent>("HEART", 800, 450, 32, 32);
-    
-    Entity& manEntity(g_entityManager.AddEntity("Man", G_NPC_LAYER));
-    manEntity.AddComponent<TransformComponent>(1600, 0, -35, 10, 32, 32, 1);
-    manEntity.AddComponent<SpriteComponent>("man");
-    manEntity.AddComponent<ColliderComponent>("MAN", 1600, 0, 32, 32);
-
-    Entity& dogEntity(g_entityManager.AddEntity("Dog", G_NPC_LAYER));
-    dogEntity.AddComponent<TransformComponent>(1700, 30, -120, 11, 32, 32, 1);
-    dogEntity.AddComponent<SpriteComponent>("dog");
-    dogEntity.AddComponent<ColliderComponent>("DOG", 1700, 30, 32, 32);
-
-    Entity& flameEntity(g_entityManager.AddEntity("Flame", G_GUI_LAYER));
-    flameEntity.AddComponent<TransformComponent>(0, G_WINDOW_HEIGHT-64, 0, 0, 64, 64, 1);
-    flameEntity.AddComponent<SpriteComponent>("flame", 2, 3, false, true);
-
-    Entity& projectileEntity(g_entityManager.AddEntity("Bowl", G_PROJECTILE_LAYER));
-    projectileEntity.AddComponent<TransformComponent>(1600, 30, -119, 13, 32, 32, 1);
-    projectileEntity.AddComponent<SpriteComponent>("bowl");
-    projectileEntity.AddComponent<ColliderComponent>("PROJECTILE", 1600, 30, 32, 32);
-    projectileEntity.AddComponent<SpawnerComponent>(180, 200, 300, true);
-
-    Entity& parkEntity(g_entityManager.AddEntity("Park", G_DECOR_LAYER));
-    parkEntity.AddComponent<TransformComponent>(50, 700, 0, 0, 32, 32, 8);
-    parkEntity.AddComponent<SpriteComponent>("park");
-
-    //Add text labels
-    Entity& textTest(g_entityManager.AddEntity("FontTest", G_GUI_LAYER));
-    textTest.AddComponent<TextComponent>(100, 100, "LEVEL ONE...", "normal", G_WHITE_COLOUR);
-    */
 
     // DEBUG - list entities and components, and create TextComponent for the fps_counter entity 
     if (G_DEBUG) {
@@ -302,7 +258,7 @@ void Game::LoadLevel(int levelNumber) {
     } 
 }
 
-// TODO:: Ideally the player controls should ALSO be processed here rather than in the KeyboardInputComponent...
+// TODO:: Ideally the player controls should ALSO be processed here rather than in the PlayerControlComponent...
 void Game::ProcessInput() {
     SDL_PollEvent(&g_event);
 

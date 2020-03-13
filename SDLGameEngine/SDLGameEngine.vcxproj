@@ -164,7 +164,7 @@
     <ClInclude Include="FontManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Entity.h" />
-    <ClInclude Include="KeyboardInputComponent.h" />
+    <ClInclude Include="PlayerControlComponent.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="ProjectileComponent.h" />
     <ClInclude Include="SpawnerComponent.h" />
@@ -175,7 +175,7 @@
     <ClInclude Include="TransformComponent.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\scripts\Level1.lua" />
+    <None Include="assets\scripts\Data1.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

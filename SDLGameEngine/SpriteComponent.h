@@ -46,10 +46,10 @@ public:
 		m_isFixed = isFixed;
 
 		if (hasDirections) {
-			Animation downAnimation = Animation(0, m_numFrames, m_animationSpeed);
+			Animation upAnimation = Animation(0, m_numFrames, m_animationSpeed);
 			Animation rightAnimation = Animation(1, m_numFrames, m_animationSpeed);
-			Animation leftAnimation = Animation(2, m_numFrames, m_animationSpeed);
-			Animation upAnimation = Animation(3, m_numFrames, m_animationSpeed);
+			Animation downAnimation = Animation(2, m_numFrames, m_animationSpeed);
+			Animation leftAnimation = Animation(3, m_numFrames, m_animationSpeed);
 			m_animations.emplace("Down", downAnimation);
 			m_animations.emplace("Right", rightAnimation);
 			m_animations.emplace("Left", leftAnimation);

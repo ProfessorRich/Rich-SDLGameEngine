@@ -20,13 +20,11 @@ private:
     SDL_Rect m_fpsBox;
 
 public:
-    // static EntityManager g_entityManager; // I guess it's going TRULY global...
     static SDL_Renderer* g_renderer;
     static AssetManager* g_assetManager;
     static SDL_Event g_event;
     static SDL_Rect g_camera;
 
-    // static unsigned int g_mapWidth, g_mapHeight; - decided against retarded globals for this one...
 
     Game();
     ~Game();        
@@ -39,7 +37,7 @@ public:
     void CheckCollisions();
     void Destroy();
     void SetDrawColour(int r, int g, int b, int opacity);
-    void LoadLevel(int levelNumber);
+    void LoadData(int dataFileNumber);
 
     void UpdateFPSCounter(float deltaTime);
     void RenderFPSCounter();
