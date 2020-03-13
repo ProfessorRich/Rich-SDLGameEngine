@@ -166,6 +166,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="KeyboardInputComponent.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="ProjectileComponent.h" />
     <ClInclude Include="SpawnerComponent.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TextComponent.h" />
