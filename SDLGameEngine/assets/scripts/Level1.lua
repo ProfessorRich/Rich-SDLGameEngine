@@ -38,8 +38,8 @@ Level1 = {
         [32] = { type="texture", id = "radar-texture", file = "./assets/images/radar.png" },
         [33] = { type="sound", id = "blades-sound", file = "./assets/sounds/blades.wav" },
         [34] = { type="texture", id = "flame-texture", file = "./assets/images/flame-basic.png" },
-	[34] = { type="font", id = "normal", file = "./assets/fonts/charriot.ttf", fontSize = 14 },
-        [35] = { type="font", id = "system", file = "./assets/fonts/arial.ttf", fontSize = 24 }
+	    [35] = { type="font", id = "normal", file = "./assets/fonts/charriot.ttf", fontSize = 14 },
+        [36] = { type="font", id = "system", file = "./assets/fonts/arial.ttf", fontSize = 24 }
     },
 
     ----------------------------------------------------
@@ -48,7 +48,7 @@ Level1 = {
     map = {
         textureAssetId = "terrain-texture-day",
         file = "./assets/tilemaps/jungle.map",
-        scale = 3,
+        scale = 2,
         tileSize = 32,
         mapSizeX = 25,
         mapSizeY = 20
@@ -77,7 +77,7 @@ Level1 = {
                     rotation = 0
 				},
                 sprite = {
-                    textureAssetId = "flame",
+                    textureAssetId = "flame-texture",
                     animated = true, 
                     frameCount = 2,
                     animationSpeed = 3,
@@ -161,7 +161,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 300,
                     angle = 180,
@@ -197,7 +197,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 300,
                     angle = 90,
@@ -233,7 +233,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 400,
                     angle = 0,
@@ -269,7 +269,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 500,
                     angle = 0,
@@ -305,7 +305,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 500,
                     angle = 0,
@@ -341,7 +341,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 500,
                     angle = 180,
@@ -377,7 +377,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 500,
                     angle = 90,
@@ -413,7 +413,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 500,
                     angle = 0,
@@ -447,7 +447,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 1000,
                     angle = 270,
@@ -483,7 +483,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 500,
                     angle = 90,
@@ -519,7 +519,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 500,
                     angle = 180,
@@ -555,7 +555,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 500,
                     angle = 90,
@@ -591,7 +591,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 500,
                     angle = 270,
@@ -627,7 +627,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 500,
                     angle = 270,
@@ -663,7 +663,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 1000,
                     angle = 225,
@@ -699,7 +699,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 1000,
                     angle = math.random(360),
@@ -735,7 +735,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 1000,
                     angle = math.random(360),
@@ -771,7 +771,7 @@ Level1 = {
                 collider = {
                     tag = "ENEMY"
                 },
-                projectileEmitter = {
+                spawner = {
                     speed = 70,
                     range = 1000,
                     angle = math.random(360),
@@ -804,9 +804,6 @@ Level1 = {
                     textureAssetId = "tree-small-6-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [22] = {
@@ -831,9 +828,6 @@ Level1 = {
                     textureAssetId = "tree-small-6-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [23] = {
@@ -858,9 +852,6 @@ Level1 = {
                     textureAssetId = "tree-small-6-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [24] = {
@@ -885,9 +876,6 @@ Level1 = {
                     textureAssetId = "tree-small-4-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [25] = {
@@ -912,9 +900,6 @@ Level1 = {
                     textureAssetId = "tree-small-4-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [26] = {
@@ -939,9 +924,6 @@ Level1 = {
                     textureAssetId = "tree-small-4-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [27] = {
@@ -966,9 +948,6 @@ Level1 = {
                     textureAssetId = "tree-small-6-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [28] = {
@@ -993,9 +972,6 @@ Level1 = {
                     textureAssetId = "tree-small-6-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [29] = {
@@ -1020,9 +996,6 @@ Level1 = {
                     textureAssetId = "tree-small-6-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [30] = {
@@ -1047,9 +1020,6 @@ Level1 = {
                     textureAssetId = "tree-small-8-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [31] = {
@@ -1074,9 +1044,6 @@ Level1 = {
                     textureAssetId = "tree-small-8-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [32] = {
@@ -1101,9 +1068,6 @@ Level1 = {
                     textureAssetId = "tree-small-7-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [33] = {
@@ -1128,9 +1092,6 @@ Level1 = {
                     textureAssetId = "tree-small-7-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [34] = {
@@ -1155,9 +1116,6 @@ Level1 = {
                     textureAssetId = "tree-small-7-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [35] = {
@@ -1182,9 +1140,6 @@ Level1 = {
                     textureAssetId = "tree-small-7-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [36] = {
@@ -1209,9 +1164,6 @@ Level1 = {
                     textureAssetId = "tree-small-7-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [37] = {
@@ -1236,9 +1188,6 @@ Level1 = {
                     textureAssetId = "tree-small-6-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [38] = {
@@ -1263,9 +1212,6 @@ Level1 = {
                     textureAssetId = "tree-small-6-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [39] = {
@@ -1290,9 +1236,6 @@ Level1 = {
                     textureAssetId = "tree-small-7-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [40] = {
@@ -1317,9 +1260,6 @@ Level1 = {
                     textureAssetId = "tree-small-8-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [41] = {
@@ -1344,9 +1284,7 @@ Level1 = {
                     textureAssetId = "rock-big-2-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
+
             }
         },
         [42] = {
@@ -1369,11 +1307,8 @@ Level1 = {
                 },
                 sprite = {
                     textureAssetId = "rock-small-1-texture",
-                    animated = false
+                    animated = false                 
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [43] = {
@@ -1398,9 +1333,6 @@ Level1 = {
                     textureAssetId = "rock-small-1-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [44] = {
@@ -1425,9 +1357,6 @@ Level1 = {
                     textureAssetId = "rock-small-1-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [45] = {
@@ -1452,9 +1381,6 @@ Level1 = {
                     textureAssetId = "rock-small-1-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [46] = {
@@ -1479,9 +1405,6 @@ Level1 = {
                     textureAssetId = "rock-small-1-texture",
                     animated = false
                 },
-                collider = {
-                    tag = "VEGETATION"
-                }
             }
         },
         [47] = {
@@ -1490,8 +1413,8 @@ Level1 = {
             components = {
                 transform = {
                     position = {
-                        x = 720,
-                        y = 15
+                        x = 1600-64,
+                        y = 0
                     },
                     velocity = {
                         x = 0,
@@ -1506,7 +1429,7 @@ Level1 = {
                     textureAssetId = "radar-texture",
                     animated = true,
                     frameCount = 8,
-                    animationSpeed = 150,
+                    animationSpeed = 5,
                     hasDirections = false,
                     fixed = true
                 }
